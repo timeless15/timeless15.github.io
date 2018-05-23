@@ -1,0 +1,211 @@
+<!DOCTYPE>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+<style type="text/css">
+*{
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color:#212529;
+  font-size: 100%;
+  box-sizing: border-box;
+}
+body {
+  font-family: Arial;
+}
+.container {
+  width: 100%;
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-right: auto;
+  margin-left: auto;
+}
+.clear:before, .clear:after {
+  clear: both;
+}
+.clear:before, .clear:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  visibility: hidden;
+}
+
+@media (max-width: 480px){
+  #grid[data-columns]::before {
+    content: '1 .column.size-1of1';
+  }
+  .container{
+    max-width: 480px;
+  }
+}
+@media (min-width: 481px) and (max-width: 768px) {
+  #grid[data-columns]::before {
+    content: '2 .column.size-1of2';
+  }
+  .container{
+    max-width: 720px;
+  }
+}
+@media (min-width: 769px) and (max-width: 1280px) {
+  #grid[data-columns]::before {
+    content: '3 .column.size-1of3';
+  }
+  .container{
+    max-width: 960px;
+  }
+}
+@media (min-width: 1281px) {
+  #grid[data-columns]::before {
+    content: '4 .column.size-1of4';
+  }
+  .container{
+    max-width: 1280px;
+  }
+}
+.column { float: left; }
+.size-1of1 { width: 100%; }
+.size-1of2 { width: 50%; }
+.size-1of3 { width: 33.333%; }
+.size-1of4 { width: 25%; }
+header{
+  padding: 30px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+header h1{
+  text-align: center;
+  font-size: 48px;
+  font-weight: 500;
+}
+#grid{
+  margin-top: 25px;
+}
+.box{
+  margin:10px;
+  padding-top: 15px;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+.box img {
+  width: 100%;
+  cursor: pointer;
+  border-radius: calc(.25rem - 1px);
+}
+.box img:hover {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)
+}
+.box .text{
+  text-align: justify;
+  margin: 10px;
+}
+.modal{
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.9);
+}
+.close {
+  color: white;
+  position: absolute;
+  top: 10px;
+  right: 25px;
+  font-size: 35px;
+  font-weight: bold;
+}
+.close:hover,
+.close:focus {
+  color: #999;
+  text-decoration: none;
+  cursor: pointer;
+}
+.modal img{
+  display: block;
+  margin: 0 auto;
+  height: auto;
+  width: auto;
+  max-height: 650px;
+  max-width: 900px;
+}
+.modal-content{    
+  animation-name: zoom;
+  animation-duration: 0.6s;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+}
+@keyframes zoom {
+  from {
+    opacity: 0;
+    transform: scale3d(.3, .3, .3);
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+</style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <h1>猪头和呱呱</h1>
+  </div>
+</header>
+<main>
+  <div class="container">
+    <div id="grid" class="clear" data-columns>
+    </div>
+  </div>
+</main>
+<!-- Modal -->
+<div class="modal" id="imgModal">
+  <span class="close cursor" onclick="closeModal()">&times;</span>
+  <div class="modal-content container">
+    <img src="">
+  </div>
+</div>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+<script src="js/data.js"></script>
+<script type="text/javascript">
+$(".modal img").css("max-height",window.innerHeight-150);
+$(".modal img").css("max-width",window.innerWidth-150);
+$(window).resize(function(){
+  $(".modal img").css("max-height",window.innerHeight-150);
+  $(".modal img").css("max-width",window.innerWidth-150);
+});
+var container = $("#grid");
+for(var i=0;i<imgData.length;i++){
+  var box = document.createElement("div");
+  box.className = 'box';
+  box.innerHTML = "<img src=" + imgData[i].src +"><div class='text'>" + imgData[i].text + "</div>"
+  container.append(box);
+}
+$(".box img").click(function(e) {
+  openModal();
+  $('#imgModal img').attr("src",this.src);
+});
+$('#imgModal').click(function(e){
+  if(!(e.target.parentNode===document.getElementsByClassName("modal-content")[0])){
+    closeModal();
+  }
+})
+function openModal() {
+  $('#imgModal').css("display","block");
+}
+function closeModal() {
+  $('#imgModal').css("display","none");
+}
+</script>
+<script src="js/salvattore.js"></script>
+</body>
+</html>
