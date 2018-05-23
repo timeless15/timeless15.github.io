@@ -1,8 +1,8 @@
 $(".modal img").css("max-height",window.innerHeight-150);
-$(".modal img").css("max-width",window.innerWidth-150);
+$(".modal img").css("max-width",window.innerWidth-250);
 $(window).resize(function(){
   $(".modal img").css("max-height",window.innerHeight-150);
-  $(".modal img").css("max-width",window.innerWidth-150);
+  $(".modal img").css("max-width",window.innerWidth-250);
 });
 var container = $("#grid");
 for(var i=0;i<imgData.length;i++){
