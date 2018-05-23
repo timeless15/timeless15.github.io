@@ -123,8 +123,6 @@ header h1{
   margin: 0 auto;
   height: auto;
   width: auto;
-  max-height: 650px;
-  max-width: 900px;
 }
 .modal-content{    
   animation-name: zoom;

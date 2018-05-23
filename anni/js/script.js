@@ -1,5 +1,10 @@
-$(".modal img").css("max-height",window.innerHeight-150);
-$(".modal img").css("max-width",window.innerWidth-250);
+if(window.innerWidth>400){
+  $(".modal img").css("max-height",window.innerHeight-150);
+  $(".modal img").css("max-width",window.innerWidth-250);
+}else{
+  $(".modal img").css("width","90%");
+}
+
 $(window).resize(function(){
   $(".modal img").css("max-height",window.innerHeight-150);
   $(".modal img").css("max-width",window.innerWidth-250);
