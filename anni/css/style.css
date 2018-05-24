@@ -4,10 +4,8 @@
   border: 0;
   color:#212529;
   font-size: 100%;
+  font-family: Tahoma, Helvetica, Arial, "Microsoft Yahei","微软雅黑", STXihei, "华文细黑", sans-serif;
   box-sizing: border-box;
-}
-body {
-  font-family: Arial;
 }
 .container {
   width: 100%;
@@ -91,6 +89,7 @@ header h1{
 .box .text{
   text-align: justify;
   margin: 10px;
+  line-height:1.5;
 }
 .modal{
   display: none;
