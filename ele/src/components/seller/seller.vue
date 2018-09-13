@@ -50,7 +50,7 @@
       <div class="pics">
         <h1 class="title">商家实景</h1>
         <div class="pic-wrapper" ref="picWrapper">
-          <ul class="pic-list" ref="picList">
+          <ul class="pic-list">
             <li class="pic-item" v-for="(pic,index) in seller.pics" :key=index>
               <img width="120" height="90" :src="pic">
             </li>
@@ -81,24 +81,13 @@ export default {
     }
   },
   created() {
-    this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'],
-    this.$nextTick(() => {
-      if(this.$refs.seller){
-        this.scroll = new BScroll(this.$refs.seller,{
-          click: true
-        })
-      }
-      if(this.$refs.picWrapper){
-        var liWidth = 120;
-        var space = 6;
-        var liLength = this.$refs.picList.children.liLength;
-        this.$refs.picList.style.width = (liWidth+space)*liLength - space + 'px';
-          new BScroll(this.$refs.picWrapper, {
-            click: true,
-            scrollX: true  // 水平方向
-          })
-      }
-    })
+    this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
+    if (this.seller.name) { // 从其它路由切换过来
+      this._initScroll()
+    }
+  },
+  updated() {
+    this._initScroll();
   },
   methods: {
     toggle(){
@@ -107,6 +96,25 @@ export default {
       }
       this.favorite = !this.favorite;
       window.localStorage.favorite = this.favorite;
+    },
+    _initScroll() {
+      this.$nextTick(() => {
+        new BScroll(this.$refs.seller,{
+          click: true
+        })
+
+        const liWidth = 120
+        const space = 6
+
+        // 动态给ul指定宽度
+        const ul = this.$refs.picWrapper.children[0]
+        const liCount = ul.children.length
+        ul.style.width = liCount * (liWidth + space) - space + 'px'
+        new BScroll(this.$refs.picWrapper, {
+          click: true,
+          scrollX: true  // 水平方向
+        })
+      })
     }
   },
   components:{

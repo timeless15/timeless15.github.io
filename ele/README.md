@@ -1,6 +1,6 @@
-# eleapp
+# vue-ele
 
-> y
+> A Vue.js project
 
 ## Build Setup
 
