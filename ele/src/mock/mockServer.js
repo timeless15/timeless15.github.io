@@ -7,7 +7,7 @@ Mock.mock('/api2/seller',{
 })
 Mock.mock('/api2/goods',{
 	code: 0,
-	data: apiData.goods
+	data: [apiData.goods, apiData.foods]
 })
 Mock.mock('/api2/ratings',{
 	code: 0,

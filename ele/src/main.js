@@ -4,7 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import './mock/mockServer'
-import './common/stylus/fonts.styl'
+import './assets/stylus/fonts.styl'
 
 /* eslint-disable no-new */
 new Vue({

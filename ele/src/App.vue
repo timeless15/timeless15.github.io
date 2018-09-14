@@ -18,7 +18,8 @@
 
 <script type="text/ecmascript-6">
 import axios from 'axios'
-import header from '@/components/header/header'
+import header from './views/header'
+
 const OK = 0
 
 export default {
@@ -42,7 +43,7 @@ export default {
 </script>
 
 <style lang="stylus" type="stylesheet/stylus">
-@import './common/stylus/mixins.styl'
+@import './assets/stylus/mixins.styl'
 
 .tab
   display flex
