@@ -7,6 +7,7 @@ import seller from '@/components/seller/seller.vue'
 Vue.use(Router)
 
 export default new Router({
+  base: '/ele/',
   routes: [
     {
       path: '/',

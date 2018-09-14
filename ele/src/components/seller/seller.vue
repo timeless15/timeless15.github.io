@@ -50,7 +50,7 @@
       <div class="pics">
         <h1 class="title">商家实景</h1>
         <div class="pic-wrapper" ref="picWrapper">
-          <ul class="pic-list">
+          <ul class="pic-list" ref="picList">
             <li class="pic-item" v-for="(pic,index) in seller.pics" :key=index>
               <img width="120" height="90" :src="pic">
             </li>
@@ -82,12 +82,10 @@ export default {
   },
   created() {
     this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
-    if (this.seller.name) { // 从其它路由切换过来
-      this._initScroll()
-    }
+    this._initScroll()
   },
   updated() {
-    this._initScroll();
+    this._initScroll()
   },
   methods: {
     toggle(){
@@ -98,11 +96,10 @@ export default {
       window.localStorage.favorite = this.favorite;
     },
     _initScroll() {
-      this.$nextTick(() => {
+       this.$nextTick(() => {
         new BScroll(this.$refs.seller,{
           click: true
         })
-
         const liWidth = 120
         const space = 6
 

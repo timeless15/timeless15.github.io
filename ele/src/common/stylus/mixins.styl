@@ -1,12 +1,7 @@
 bg-image($url)
-  background-image url("/static/images/" + $url + "@2x.png")
+  background-image url("../../../static/images/" + $url + "@2x.png")
   @media(min-device-pixel-ratio:3),(-webkit-min-device-pixel-ratio:3)
-    background-image url("/static/images/" + $url + "@3x.png")
-
-bg-star($url)
-  background-image url("../star/" + $url + "@2x.png")
-  @media(min-device-pixel-ration:3),(-webkit-min-device-pixel-ration:3)
-    background-image url("../star/" + $url + "@3x.png" )
+    background-image url("../../../static/images/" + $url + "@3x.png")
 
 border-1px($color)
   position relative
