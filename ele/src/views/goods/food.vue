@@ -21,7 +21,7 @@
 					<div class="cartcontrol-wrapper">
 						<cartcontrol :food="food" :update-food-count="updateFoodCount"></cartcontrol>
 					</div>
-					<div class="buy" v-if="!food.count" @click="updateFoodCount(food, true, $event)">加入购物车</div>
+					<div class="buy" v-if="!food.count" @click="updateFoodCount({id:food.id, isAdd:true, event:$event})">加入购物车</div>
 				</div>
 				<split></split>
 				<div class="info">

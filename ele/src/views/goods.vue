@@ -17,27 +17,27 @@
           <li class="food-list food-list-hook" v-for="(good,index) in goods" :key="index" >
             <h1 class="title">{{good.name}}</h1>
             <ul>
-              <li class="food-item border-1px" v-for="(i, index) in good.foods" :key="index"
-                  @click="clickFood(food, $event)">
+              <li class="food-item border-1px" v-for="(foodId, index) in good.foods" :key="index"
+                  @click="clickFood(findFood(foodId), $event)">
                 <div class="icon">
-                  <img width="57" height="57" :src="foods[i].icon">
+                  <img width="57" height="57" :src="findFood(foodId).icon">
                 </div>
                 <div class="content">
-                  <h2 class="name">{{foods[i].name}}</h2>
-                  <p class="desc" v-show="foods[i].description">{{foods[i].description}}</p>
+                  <h2 class="name">{{findFood(foodId).name}}</h2>
+                  <p class="desc" v-show="findFood(foodId).description">{{findFood(foodId).description}}</p>
                   <div class="extra">
-                    <span class="count">月售{{foods[i].sellCount}}份</span>
-                    <span>好评率{{foods[i].rating}}%</span>
+                    <span class="count">月售{{findFood(foodId).sellCount}}份</span>
+                    <span>好评率{{findFood(foodId).rating}}%</span>
                   </div>
                   <div class="price">
-                    <span class="now">￥{{foods[i].price}}</span>
-                    <span class="old" v-show="foods[i].oldPrice">￥{{foods[i].oldPrice}}</span>
+                    <span class="now">￥{{findFood(foodId).price}}</span>
+                    <span class="old" v-show="findFood(foodId).oldPrice">￥{{findFood(foodId).oldPrice}}</span>
                   </div>
                   <div class="cartcontrol-wrapper">
-                    <cartcontrol :food="foods[i]" :update-food-count="updateFoodCount"></cartcontrol>
+                    <cartcontrol :food="findFood(foodId)" :update-food-count="updateFoodCount"></cartcontrol>
                   </div>
                 </div>
-              </li>
+              </li> 
             </ul>
           </li>
         </ul>
@@ -73,11 +73,11 @@ export default {
     }
   },
   created() {
+    this.$store.dispatch('getFoodsApi'),
     axios.get('/api2/goods').then((response) => {
       const result = response.data
       if (result.code === 0) {
-        this.goods = result.data[0];
-        this._initFood(result.data[1]);
+        this.goods = result.data; 
         this.$nextTick(() => {
           this._initScroll()
           this._initTops()
@@ -86,8 +86,11 @@ export default {
     }),
     this.classMap = ["decrease", "discount",  "special", "guarantee", "invoice"]
   },
+  mounted() {
+  },
   methods: {
-    ...mapMutations(['_initFood']),
+    ...mapMutations(['updateFoodCount', 'clearCart']),
+    ...mapActions(['getFoodsApi']),
     _initScroll() {
       this.menuScroll = new BScroll(this.$refs.menuWrapper,{
         click: true
@@ -118,34 +121,19 @@ export default {
       const el = foodList[index];
       this.foodsScroll.scrollToElement(el, 300)
     },
-    updateFoodCount(food, isAdd, event){
-      if(!event._constructed){
-        return 
-      }
-      if(isAdd) {
-        if(!food.count){
-          Vue.set(food, 'count', 1)
-        }else{
-          food.count++
-        }
-      }else{
-        if(food.count){
-          food.count--
-        }
-      }
-    },
-    clearCart() {
-      this.foodList.forEach(food => {
-        food.count = 0;
-      })
-    },
     clickFood(food, event){
       if(!event._constructed){
         return 
       }
       this.selectFood = food;
       this.$refs.food.show(true); //指向food组件，food组件内的指向dom
-    }
+    },
+    findFood (id) {
+      const index = this.foods.findIndex((ele) => {
+        return ele.id === id
+      })
+      return this.foods[index]
+    },
   },
   computed: {
     currentIndex() {
@@ -153,17 +141,6 @@ export default {
         return this.scrollY>=top && this.scrollY<this.tops[index+1]
       })
     },
-    // foodList() {
-    //   const foods = [];
-    //   this.goods.forEach(good => {
-    //     good.foods.forEach(food => {
-    //       if(food.count){
-    //         foods.push(food)
-    //       }
-    //     })
-    //   })
-    //   return foods;
-    // },
     ...mapState(['foods']),
     ...mapGetters(['foodList'])
   },
