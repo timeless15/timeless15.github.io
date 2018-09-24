@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>table test</title>
+	<script src="https://unpkg.com/lodash@4.17.11/lodash.js"></script>
+	<script src="table.js"></script>
+	<script src="thead/index.js"></script>
+	<script src="tbody/row/index.js"></script>
+	<script src="tbody/index.js"></script>
+	<link rel="stylesheet" type="text/css" href="table.css">
+</head>
+<body>
+<div id="table"></div>
+</body>
+<script>
+	const config = {
+  	"table": {
+    	"responsive": true,
+    	"border": {
+    		"borderWidth": 0,
+    		"borderColor": "#57D2FE"
+    	},
+    	"textStyle": {
+        "fontFamily": "微软雅黑",
+        "color": "#fff",
+        "fontSize": 12,
+        "fontWeight": "normal",
+        "align": "left"
+      }
+    },
+    "cell": {
+      "space": {
+        "leftright": 12,
+        "topbottom": 9
+      }
+    },
+    "head": {
+      "show": true,
+      "textStyle": {
+        "color": "#fff",
+        "fontSize": 12,
+        "fontWeight": "normal",
+        "align": "center"
+      },
+      "bgColor": "#00BAFF"
+    },
+    "column": {
+      "width": 45,
+      "cutline": {
+        "borderWidth": 1,
+        "borderColor": "#57D2FE"
+      },
+      "first": {
+        "textStyle": {
+          "color": "#fff",
+          "fontSize": 12,
+          "fontWeight": "normal"
+         },
+        "bgColor":  "", //#0A2732
+        "align": "left"
+      },
+      "second": {
+      	"textStyle": {
+          "color": "#fff",
+          "fontSize": 12,
+          "fontWeight": "normal"
+         },
+        "bgColor":  "", //#0A2732
+        "align": "left"
+      }
+    },
+    "row": {
+      "cutline": {
+        "borderWidth": 1,
+        "borderColor": "#57D2FE"
+      },
+      "striped": true
+    }
+  }
+  const apiData = [
+  	{
+      "name": "排名",
+      "data": [1, 2, 3, 4, 5, 6]
+    },
+    {
+      "name": "名称",
+      "data": ["技术第一场", "销售第一场", "市场第一场", "技术第二场", "销售第二场", "市场第一场"]
+    },
+    {
+      "name": "数量",
+      "data": [5972, 5657, 5153, 4218, 3527, 3527]
+    }
+  ]
+  var table = new Table("#table");
+  table.render(apiData, config);
+</script>
+
+</html>
