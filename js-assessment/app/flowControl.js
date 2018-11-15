@@ -10,6 +10,22 @@ exports.flowControlAnswers = {
     //
     // otherwise the function should return the number, or false if no number
     // was provided or the value provided is not a number
-
-  }
-};
+        if(!num || typeof num!=='number'){
+            return false
+        }
+        var a = num % 3;
+        var b = num % 5;
+        var result = '';
+        if(a!==0 && b!==0){
+            return num;
+        }else {
+            if(a===0) {
+                result += 'fizz';
+            }
+            if(b===0) {
+                result += 'buzz';
+            }
+            return result;
+        }
+    }
+}
