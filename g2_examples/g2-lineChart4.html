@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,height=device-height">
+    <title>多折线图</title>
+    <style>::-webkit-scrollbar{display:none;}html,body{overflow:hidden;height:100%;margin:0;}</style>
+</head>
+<body>
+<div id="mountNode"></div>
+<script>/*Fixing iframe window.innerHeight 0 issue in Safari*/document.body.clientHeight;</script>
+<script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.g2-3.4.1/dist/g2.min.js"></script>
+<script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.10.1/dist/data-set.min.js"></script>
+<script src="https://gw.alipayobjects.com/os/antv/assets/lib/jquery-3.2.1.min.js"></script>
+<script>
+$.getJSON('./data/nintendo.json', function(data){
+  var chart = new G2.Chart({
+    container: 'mountNode',
+    forceFit: true,
+    height: window.innerHeight,
+    padding: [30, 20, 50, 30]
+  });
+  chart.axis('Date', {
+    label: {
+      textStyle: {
+        fill: '#aaaaaa'
+      },
+      formatter: function formatter(text) {
+        var dataStrings = text.split('.');
+        return dataStrings[2] + '-' + dataStrings[1] + '-' + dataStrings[0];
+      }
+    }
+  });
+  chart.axis('Close', {
+    label: {
+      textStyle: {
+        fill: '#aaaaaa'
+      }
+    }
+  });
+  chart.source(data, {
+    Date: {
+      tickCount: 10
+    }
+  });
+  chart.line().position('Date*Close');
+  var max_min = findMaxMin();
+  var max = max_min.max;
+  var min = max_min.min;
+  chart.guide().dataMarker({
+    top: true,
+    content: '全部峰值：'+max.Close,
+    position: [max.Date, max.Close],
+    style: {
+      text: {
+        fontSize: 12
+      }
+    },
+    lineLength: 30
+  })
+  chart.guide().dataMarker({
+    top: true,
+    content: '全部谷值：'+min.Close,
+    position: [min.Date, min.Close],
+    style: {
+      text: {
+        fontSize: 12
+      }
+    },
+    lineLength: 30
+  })
+  chart.render();
+
+  function findMaxMin() {
+    var maxValue = 0;
+    var minValue = 50000;
+    var maxObj = null;
+    var minObj = null;
+    for(var i=0;i<data.length;i++) {
+      var d = data[i];
+      if(d.Close>maxValue) {
+        maxValue = d.Close;
+        maxObj = d;
+      }
+      if(d.Close<minValue) {
+        minValue = d.Close;
+        minObj = d;
+      } 
+    }
+    return {
+      max: maxObj,
+      min: minObj
+    };
+  }
+})
+</script>
+</body>
+</html>

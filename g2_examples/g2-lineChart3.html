@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,height=device-height">
+    <title>多折线图</title>
+    <style>::-webkit-scrollbar{display:none;}html,body{overflow:hidden;height:100%;margin:0;}</style>
+</head>
+<body>
+<div id="mountNode"></div>
+<script>/*Fixing iframe window.innerHeight 0 issue in Safari*/document.body.clientHeight;</script>
+<script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.g2-3.4.1/dist/g2.min.js"></script>
+<script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.10.1/dist/data-set.min.js"></script>
+<script src="https://gw.alipayobjects.com/os/antv/assets/lib/jquery-3.2.1.min.js"></script>
+<script>
+$.getJSON('./data/diamond.json', function(data){
+  var chart = new G2.Chart({
+  	container: 'mountNode',
+  	forceFit: true,
+  	height: window.innerHeight
+  });
+  chart.scale({
+  	x: {
+  		alias: 'depth',
+  		min: 50,
+  		max: 70,
+  		sync: true
+  	},
+  	y: {
+  		alias: '概率密度分布',
+  		sync: true
+  	}
+  });
+  ['boxcar', 'cosine', 'epanechnikov', 'gaussian', 'quartic', 'triangular', 'tricube', 'triweight', 'uniform'].forEach(function(method, i) {
+  	var dv = new DataSet.View().source(data);
+  	dv.transform({
+  		type: 'kernel-smooth.regression',
+  		method: method,
+  		field: ['depth'], // 实际上就只是对depth字段用不同的方法进行概率密度统计。
+  		extent: [50, 70]
+  	});
+  	var view = chart.view();
+  	!!i && view.axis(false); // 防止重复画坐标轴
+  	view.source(dv);
+  	view.line().position('x*y').color(G2.Global.colors_16[i]);
+  });
+  chart.render();
+})
+</script>
+</body>
+</html>
