@@ -1,0 +1,204 @@
+:global {
+
+  h6 {
+    margin: 0;
+  }
+
+  a {
+    text-decoration: none;
+  }
+  .header-tmpl {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+    padding-left: 12px;
+
+    .cancle {
+      position: fixed;
+      left: 12px;
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      background: url('../../assets/img/screen/icon-goback.png') -8px -5px no-repeat;
+      cursor: pointer;
+    }
+  }
+  .main-tmpl-list {
+    display: flex;
+    position: fixed;
+    left: 0;
+    width: 300px;
+    height: calc(100vh);
+    background-color: @bg-color-2;
+  }
+
+  .main-tmpl-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: calc(~ '100vw - 300px');
+    height: calc(~ '100vh - 60px');
+    min-width: 740px;
+    min-height: 840px;
+    margin-left: 300px;
+    padding: 10px 10px 20px 10px;
+    text-align: center;
+    background-color: #2b2f32;
+  }
+
+  .template-list {
+    width: 100%;
+
+    .template-item {
+      position: relative;
+      width: 100%;
+      height: 105px;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      vertical-align: top;
+      color: #fff;
+      cursor: pointer;
+      .template-img,
+      .template-des {
+        transition: .2s ease-out;
+      }
+      &.active {
+        background-color: #4d5459;
+        .template-img,
+        .template-des{
+          transform: translateX(21px);
+        }
+      }
+
+      &:hover {
+
+        .template-img {
+          border: 2px solid @primary-color;
+          border-collapse: collapse;
+        }
+
+      }
+
+      .template-img {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        vertical-align: top;
+        position: relative;
+        width: 140px;
+        height: 79px;
+        overflow: hidden;
+        background-color: #0f2a42;
+        img {
+          width: 100%;
+        }
+      }
+
+      .template-des {
+        flex: auto;
+        text-align: left;
+        padding-left: 15px;
+
+        .des-info {
+          margin-bottom: 1em;
+          line-height: 1.5;
+          font-size: 12px;
+          color: #999;
+        }
+
+      }
+
+    }
+
+  }
+
+  .tmpl-info {
+    width: 904px;
+    transition: .2s ease;
+    button {
+      width: 125px;
+      height: 40px;
+    }
+
+    .tmpl-img {
+      background-color: #0f2a42;
+      position: relative;
+      img {
+        width: 100%;
+      }
+      .img-mask {
+        position: absolute;
+        top: 0;
+        left: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+        &:hover {
+          background-color: rgba(0,0,0,.52);
+          button {
+            display: block;
+          }
+        }
+      }
+
+      button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+      }
+
+    }
+
+    .tmpl-content {
+      position: relative;
+      display: flex;
+      height: 40px;
+      margin-top: 10px;
+
+      .tmpl-desc {
+        flex: auto;
+        text-align: left;
+        color: #fff;
+      }
+
+      button {
+        flex: none;
+      }
+    }
+
+  }
+
+}
+
+.header {
+  width: 100%;
+  height: 72px;
+  line-height: 72px;
+  background-color: #212528;
+
+  .cancle {
+    display: flex;
+    position: absolute;
+    left: 24px;
+    align-items: center;
+    color: #fff;
+
+    i {
+      font-size: 20px;
+      color: #00c1de;
+    }
+  }
+
+  h6 {
+    text-align: center;
+    color: #fff;
+    font-size: 16px;
+  }
+}

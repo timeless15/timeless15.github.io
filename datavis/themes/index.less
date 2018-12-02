@@ -1,0 +1,42 @@
+:global {
+  a {
+    text-decoration: none !important;
+  }
+  .logo {
+    height: 32px;
+    background: rgba(255,255,255,.2);
+    margin: 16px;
+  }
+  
+  .trigger {
+    font-size: 18px;
+    line-height: 64px;
+    padding: 0 24px;
+    cursor: pointer;
+    transition: color .3s;
+  };
+  body {
+    .mb-ruler .indicator .value {
+      background-color: rgba(37, 51, 60, 0.8);
+    }
+  }
+  .gui-color-picker {
+    position: relative;
+    border: 1px solid transparent;
+    border-color: @component-border-color;
+    transition: all .3s cubic-bezier(.645,.045,.355,1);
+  
+    .gui-color-picker-left {
+      border-right: 1px solid transparent;
+      border-color: @component-border-color;
+      transition: all .4s .1s cubic-bezier(.645,.045,.355,1);
+    }
+  }
+  .gui-color-picker:hover {
+    border-color: @primary-color;
+  
+    .gui-color-picker-left {
+      border-color: @primary-color;
+    }
+  }
+}

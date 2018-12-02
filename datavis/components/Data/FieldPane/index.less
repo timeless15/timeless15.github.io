@@ -1,0 +1,40 @@
+:global{
+  .field-wrap{
+    padding: 8px;
+    background: #132231;
+    height: 100%;
+    .field-list{
+      .field-list-item{
+        margin-bottom: 4px;
+        .field-pill {
+          width: 100%;
+          display: flex;
+          vertical-align: middle;
+          border-radius: 3px;
+          line-height: 20px;
+          box-sizing: border-box;
+          height: 24px;
+          padding: 1px 3px;
+          border: 1px solid #1d4063;
+          background: #0d1d2c;
+          .anticon {
+            padding-top: 3px;
+          }
+          .field-text{
+            flex-grow: 1;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            margin-left: 6px;
+          }
+          .field-type,
+          .field-filter,
+          .field-add{
+            flex-shrink: 0;
+            padding-right: 2px;
+          }
+        }
+      }
+    }
+  }
+}

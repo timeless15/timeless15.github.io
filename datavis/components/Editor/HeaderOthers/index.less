@@ -1,0 +1,30 @@
+.navRight {
+  top: 0;
+  right: 0;
+  text-align: center;
+  width: 355px;
+
+  ul {
+    display: flex;
+    justify-content: space-around;
+    li {
+      position: relative;
+      display: inline-block;
+      width: 90px;
+      height: 60px;
+      padding-top: 10px;
+      cursor: pointer;
+
+      &:hover {
+        color: @primary-color;
+        border-color: @primary-color;
+      }
+
+      button {
+        width: 100%;
+        color: @primary-color-2;
+        border-color: @primary-color-2;
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+:global {
+  .tooltip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    padding: 10px 15px;
+    background: rgba(50, 50, 50, .7);
+    box-shadow: 0 0 5px #000;
+    color: #fff;
+    font-size: 14px;
+  
+    p {
+      line-height: 20px;
+    }
+  }
+  
+  .show {
+    display: block;
+  }
+}

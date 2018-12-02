@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,height=device-height">
+    <title>直方图</title>
+    <style>::-webkit-scrollbar{display:none;}html,body{overflow:hidden;height:100%;margin:0;}</style>
+</head>
+<body>
+<div id="mountNode"></div>
+<script>/*Fixing iframe window.innerHeight 0 issue in Safari*/document.body.clientHeight;</script>
+<script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.g2-3.4.1/dist/g2.min.js"></script>
+<script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.10.1/dist/data-set.min.js"></script>
+<script src="https://gw.alipayobjects.com/os/antv/assets/lib/jquery-3.2.1.min.js"></script>
+<script>
+$.getJSON('./data/diamond.json', function(data){
+  var ds = new DataSet();
+  var dv = ds.createView('dimond').source(data);
+  console.log(dv);
+  dv.transform({
+    type: 'bin.histogram',
+    field: 'depth',
+    binWidth: 2,
+    as: ['depth', 'count']
+  });
+  var chart = new G2.Chart({
+    container: 'mountNode',
+    forceFit: true,
+    height: window.innerHeight
+  });
+  chart.source(dv, {
+    depth: {
+      tickInterval: 4
+    }
+  });
+  chart.tooltip({
+    crosshair: false,
+    position: 'top',
+    inPlot: false
+  });
+  chart.interval().position('depth*count');
+  chart.render();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+:global {
+  .data-attr-table-warpper {
+    margin-top: -13px;
+    margin-left: -15px;
+  }
+  .data-attr-table {
+    width: 100%;
+    border-bottom: 0.5px solid @component-border-color;
+
+    .table-head {
+      border-bottom: 0.5px solid rgba(64, 81, 113, 0.5);
+    }
+    .table-body {
+      display: block;
+      padding-bottom: 10px;
+      padding-top: 10px;
+    }
+
+    .column-item {
+      display: inline-flex;
+      font-size: 14px;
+      align-items: center;
+      padding: 0 6px;
+      box-sizing: border-box;
+      height: 50px;
+      line-height: 17px;
+      vertical-align: middle;
+    }
+
+    .attr-name {
+      width: 19%;
+      padding-left: 16px;
+      
+      span {
+        cursor: pointer;
+      }
+    }
+
+    .attr-value {
+      width: 41%;
+    }
+
+    .attr-status {
+      width: 40%;
+
+      .attr-status-icon {
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        border-radius: 1px;
+        margin-right: 4px;
+        background-color: #3de7c9;
+        transition: .2s;
+        vertical-align: middle;
+
+        &.failed {
+          background-color: #e7b13d;
+        }
+      }
+
+      .attr-status-text {
+        vertical-align: middle;
+      }
+    }
+
+  }
+
+  .data-source-wrapper {
+    // padding: 0 20px 20px 20px;
+
+    .data-source-selector {
+      padding-top: 10px;
+
+      .data-source-select {
+        margin: 10px 0;
+
+        &>div {
+          width: 100%;
+        }
+      }
+    }
+
+    .data-source-editor {
+      width: 100%;
+
+      .data-source-result {
+        margin-top: 16px;
+        text-align: center;
+      }
+    }
+  }
+
+  .ant-collapse.ant-collapse-borderless + .ant-row.ant-form-item {
+    padding-top: 16px;
+  }
+}
+
+.guiGroupContainer {
+
+  & > .guiGroupController {
+    border-top: 1px solid #dcdee3;
+    &:first-child{
+      border-top: 0;
+    }
+    .guiGroupName {
+      height: 38px;
+      line-height: 38px;
+      color: #959595;
+    }
+  }
+}
+
+.guiGroupName {
+  height: 38px;
+  line-height: 38px;
+  color: #959595;
+}
+
+
+.guiController {
+  display: flex;
+}
+
+.guiNumbersSingle {
+  display: flex;
+  margin-right: 16px;
+  flex-direction: column;
+  width: 90px;
+
+  &:last-of-type {
+    margin-right: 0;
+  }
+  
+  .guiNumbersSingleName {
+    line-height: 25px;
+    color: #959595;
+    text-align: center;
+  }
+}

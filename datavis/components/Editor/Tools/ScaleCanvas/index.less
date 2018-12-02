@@ -1,0 +1,31 @@
+.sliderIcon {
+  font-size: 20px;
+}
+
+.sliderIconPlus {
+  composes: sliderIcon;
+  cursor: zoom-in;
+}
+.sliderIconMinus {
+  composes: sliderIcon;
+  cursor: zoom-out;
+}
+
+.sliderWrapper {
+  position: absolute;
+  right: 17px;
+  display: flex;
+  width: 120px;
+  justify-content: space-around;
+  align-items: center;
+  color: #6b88b0;
+
+  .sliderContent {
+    width: 54px;
+    height: 20px;
+    line-height: 20px;
+    border: 1px solid #6b88b0;
+    text-align: center;
+    color: #8bdfff;
+  }
+}

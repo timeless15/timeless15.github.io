@@ -1,0 +1,87 @@
+:global {
+  .my-data {
+    height: calc(~ '100vh - 102px');
+    max-width: 1440px;
+    margin: 0 auto;
+    .data-title {
+      display: flex;
+      flex-direction: column;
+      padding-left: 55px;
+      justify-content: center;
+      height: 50px;
+      position: relative;
+      .title-right {
+        position: absolute;
+        right: 0;
+      }
+      .title-add {
+        height: 32px;
+        display: flex;
+      }
+    }
+    .data-list {
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      padding: 60px 50px 30px 36px;
+      .main-storage {
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        margin: 16px 0;
+        position: relative;
+        min-width: 50%;
+        &:hover {
+          .storage-operate{
+            transition: .5s all cubic-bezier(.65,.05,.36,1);
+            left: 50px;
+          }
+        }
+        .storage-operate {
+          transition: .5s all cubic-bezier(.65,.05,.36,1);
+          position: absolute;
+          left: 170px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 35px;
+          width: 115px;
+          background-image: linear-gradient(-90deg,#42edf8 0,#4ba5a9 100%);
+          .storage-edit, 
+          .storage-delete {
+            cursor: pointer;
+            padding-right: 8px;
+            .anticon {
+              color: #010b0e;
+              font-size: 16px;
+              &:hover {
+                color: #fff;
+              }
+            }
+          }
+        }
+        .storage-info {
+          margin-left: 150px;
+          margin-right: 20px;
+          min-width: 430px;
+          display: flex;
+          flex-wrap: wrap;
+          flex: 1;
+          justify-content: space-between;
+          line-height: 44px;
+          padding: 0 35px;
+          border: 1px solid #4ba5a9;
+          border-left: 3px solid #4ba5a9;
+          background: #010b0e;
+          z-index: 10;
+          .info-name,
+          .info-time {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+          }
+        }
+      }
+    }
+  }
+}

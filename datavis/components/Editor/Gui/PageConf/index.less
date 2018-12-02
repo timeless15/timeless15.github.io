@@ -1,0 +1,60 @@
+:global {
+  .guiGroupContainer {
+    padding: 0 25px;
+    
+      & > .guiGroupController {
+        border-top: 1px solid #dcdee3;
+        // margin-left: 20px;
+        // margin-right: 10px;
+        &:first-child{
+          border-top: 0;
+        }
+        .guiGroupName {
+          height: 38px;
+          line-height: 38px;
+          color: #959595;
+        }
+      }
+    }
+    
+    
+  .guiController {
+    display: flex;
+  }
+  
+  .guiNumbersSingle {
+    display: flex;
+    margin-right: 16px;
+    flex-direction: column;
+    width: 90px;
+    .guiNumbersSingleName {
+      line-height: 25px;
+      color: #727e87;
+      text-align: center;
+    }
+  }
+
+  .screenPreview {
+    margin-top: 12px;
+    width: 100%;
+    height: 123.75px;
+    border: 1px solid @component-border-color;
+    background-color: @component-background;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+.pageConfigHeader {
+  height: 42px;
+  margin-bottom: 16px;
+  line-height: 42px;
+  color: @text-color;
+  text-align: center;
+  background-color: #030a10;
+}
+
+
+
