@@ -2,7 +2,7 @@
  * @Author: Shiqi Han
  * @Date: 2018-11-25 17:05:34
  * @Last Modified by: Shiqi Han
- * @Last Modified time: 2018-11-25 18:18:51
+ * @Last Modified time: 2018-12-03 09:45:28
  */
 
 import React, { PureComponent } from 'react';
@@ -27,7 +27,7 @@ class DataHeader extends PureComponent {
           <span className={styles.btnBack} onClick={this.handleGoBack} onKeyDown={this.handleGoBack} title="返回" />
           <span className={styles.title}>
             {name}
-            数据编辑
+            {'数据编辑'}
           </span>
         </div>
       </div>

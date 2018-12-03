@@ -1,7 +1,7 @@
 const api = (() => {
   const MOCK = true;
   const ROOT_URL = 'http://localhost:3000/';
-
+  // const ROOT_URL = 'http://10.5.4.6:3000/';
   if (MOCK) {
     return {
       MOCK,
@@ -22,7 +22,9 @@ const api = (() => {
       DATA_DELETE: `${ROOT_URL}data`,
       DATA_SEARCH: `${ROOT_URL}data`,
       OPERATORS_SEARCH: `${ROOT_URL}operators`,
-      OPERATORS_CREATE: `${ROOT_URL}operators`
+      OPERATORS_CREATE: `${ROOT_URL}operators`,
+      OPERATORS_UPDATE: `${ROOT_URL}operators`,
+      OPERATORS_DELETE: `${ROOT_URL}operators`
     };
   }
   return {
@@ -44,7 +46,9 @@ const api = (() => {
     DATA_DELETE: `${ROOT_URL}data`,
     DATA_SEARCH: `${ROOT_URL}data`,
     OPERATORS_SEARCH: `${ROOT_URL}operators`,
-    OPERATORS_CREATE: `${ROOT_URL}operators`
+    OPERATORS_CREATE: `${ROOT_URL}operators`,
+    OPERATORS_UPDATE: `${ROOT_URL}operators`,
+    OPERATORS_DELETE: `${ROOT_URL}operators`
   };
 })();
 

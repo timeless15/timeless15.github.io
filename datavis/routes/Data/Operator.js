@@ -2,7 +2,7 @@
  * @Author: Shiqi Han
  * @Date: 2018-11-25 15:14:00
  * @Last Modified by: Shiqi Han
- * @Last Modified time: 2018-12-02 22:05:55
+ * @Last Modified time: 2018-12-03 17:38:51
  */
 /* eslint-disable */
 import React, { Component } from 'react';
@@ -19,15 +19,16 @@ class Operate extends Component {
     super(props);
     this.state = {
       originData: [],
-      fields: []
+      fieldDefs: []
     }
     this.handleGoBack = this.handleGoBack.bind(this);
+    this.handlefieldTypeChange = this.handlefieldTypeChange.bind(this);
   }
 
   componentDidMount() {
     const { match, dispatch, operator } = this.props;
     const { id } = match.params;
-    if(!operator.data.length || operator.id !== +id ){
+    if (!operator.data.length || operator.id !== +id ) {
       dispatch({
         type: 'operator/searchOperator',
         payload: id
@@ -35,16 +36,16 @@ class Operate extends Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState){
-    if(this.props.operator !== prevProps.operator) {
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.operator !== prevProps.operator) {
       this.setState({
         originData: this.props.operator.data,
-        fields: this.props.operator.fields
+        fieldDefs: this.props.operator.fieldDefs
       });
     }
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     const { dispatch } = this.props;
     dispatch({
       type: 'operator/resetOperator'
@@ -56,16 +57,33 @@ class Operate extends Component {
     history.push('/data');
   }
 
+  handlefieldTypeChange(selectField, newType) {
+    const { dispatch, operator } = this.props;
+    const { fieldDefs } = operator;
+    fieldDefs.forEach((f) => {
+      if (f.field === selectField) {
+        f.type = newType;
+      }
+    });
+    dispatch({
+      type: 'operator/saveFieldType',
+      payload: {
+        fieldDefs
+      }
+    });
+  }
+
   render() {
-    const { name, fields } = this.props.operator;
+    const { operator } = this.props;
+    const { name, fieldDefs, encoding, data } = operator;
     return (
       <div className="page">
         <DataHeader onBackClick={this.handleGoBack} name={name}/>
         <SplitPane split="vertical" defaultSize={200} minSize={175} maxSize={350}>
-          <FieldPane fields={fields} />
+          <FieldPane fieldDefs={fieldDefs} onfieldTypeChange={this.handlefieldTypeChange}/>
           <SplitPane split="vertical" defaultSize={235} minSize={200} maxSize={350}>
             <EncodingPane />
-            <ViewPane />
+            <ViewPane data={data} fieldDefs={fieldDefs} encoding={encoding}/>
           </SplitPane>
         </SplitPane>
       </div>

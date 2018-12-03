@@ -1,7 +1,7 @@
-/*eslint-disable*/
 import {
   newOperator,
-  searchOperator
+  searchOperator,
+  updateOperator
 } from 'services/operator';
 
 export default {
@@ -10,10 +10,11 @@ export default {
     id: '',
     name: '',
     data: [],
-    fields: []
+    fieldDefs: [],
+    encoding: {}
   },
   effects: {
-    // 新建页面配置
+    // 新建配置
     * addOperator({ payload }, { call, put }) {
       const { data } = yield call(newOperator, payload);
       yield put({
@@ -28,28 +29,44 @@ export default {
         type: 'saveOperator',
         payload: data
       });
-    }
+    },
 
+    * saveOperator({ payload }, { call }) {
+      yield call(updateOperator, payload);
+    }
   },
   reducers: {
     newOperator(state, { payload }) {
-      const { data, name, id, fields } = payload;
+      const {
+        data, name, id, fieldDefs, encoding
+      } = payload;
       return {
         ...state,
         id,
         name,
         data,
-        fields
+        fieldDefs,
+        encoding
       };
     },
 
     saveOperator(state, { payload }) {
-      const { data, name, id, fields } = payload;
+      const {
+        data, name, id, fieldDefs, encoding
+      } = payload;
       return {
         id,
         name,
         data,
-        fields
+        fieldDefs,
+        encoding
+      };
+    },
+
+    saveFieldType(state, { payload }) {
+      return {
+        ...state,
+        ...payload
       };
     },
 
@@ -58,7 +75,8 @@ export default {
         id: '',
         name: '',
         data: [],
-        fields: []
+        fieldDefs: [],
+        encoding: {}
       };
     }
   }

@@ -2,7 +2,7 @@
  * @Author: Shiqi Han
  * @Date: 2018-11-21 12:05:01
  * @Last Modified by: Shiqi Han
- * @Last Modified time: 2018-12-02 22:32:49
+ * @Last Modified time: 2018-12-03 17:17:20
  */
 
 import React, { Component } from 'react';
@@ -39,6 +39,7 @@ class Listview extends Component {
       },
       spinning: false
     };
+    this.fileInput = React.createRef();
     this.showModal = this.showModal.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleAddData = this.handleAddData.bind(this);
@@ -60,7 +61,7 @@ class Listview extends Component {
     const { file } = this.state;
     const data = file.data[0];
     const keys = Object.keys(data);
-    const fields = [];
+    const fieldDefs = [];
     keys.forEach((key) => {
       const value = data[key];
       let type = TYPES.LINEAR;
@@ -70,12 +71,12 @@ class Listview extends Component {
       } else if (dateRegex.test(value)) {
         type = TYPES.TIME;
       }
-      fields.push({
+      fieldDefs.push({
         field: key,
         type
       });
     });
-    return fields;
+    return fieldDefs;
   }
 
   showModal() {
@@ -161,8 +162,9 @@ class Listview extends Component {
           reader.readAsText(file);
         }
       } else {
+        const { input } = this.fileInput.current;
         message.warn(`上传文件必须为${type}类型`);
-        form.resetFields(['file']);
+        input.value = '';
       }
     }
   }
@@ -178,7 +180,7 @@ class Listview extends Component {
         if (!err) {
           const { file } = this.state;
           const { data } = file;
-          const fields = this.getDataField();
+          const fieldDefs = this.getDataField();
           dispatch({
             type: 'data/addData',
             payload: {
@@ -207,7 +209,8 @@ class Listview extends Component {
               id,
               name: values.name,
               data,
-              fields
+              fieldDefs,
+              encoding: {}
             }
           });
         }
@@ -362,7 +365,7 @@ class Listview extends Component {
                     <Spin spinning={spinning} />
                     <span>正在上传</span>
                   </div>
-                  <Input style={uploadStyles.uploadInput} type="file" onChange={this.handleUploadFile} />
+                  <Input style={uploadStyles.uploadInput} type="file" onChange={this.handleUploadFile} ref={this.fileInput} />
                 </div>
               )}
             </FormItem>

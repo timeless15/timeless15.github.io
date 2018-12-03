@@ -19,3 +19,11 @@ export async function searchOperator(id) {
     mehotd: 'GET'
   });
 }
+
+export async function updateOperator(params) {
+  const { id } = params;
+  return request(`${API.OPERATORS_UPDATE}/${id}`, {
+    method: 'PUT',
+    body: params
+  });
+}

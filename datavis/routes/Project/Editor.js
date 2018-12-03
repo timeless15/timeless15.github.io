@@ -98,7 +98,7 @@ class Editor extends Component {
   handleScroll() {
     const screensRect = document.querySelector('#screen').getBoundingClientRect();
     const canvasRect = document.querySelector('#editor').getBoundingClientRect();
-    // console.log(screensRect);
+    console.log(screensRect);
 
     // 标尺开始的刻度
     const { zoom } = this.state;

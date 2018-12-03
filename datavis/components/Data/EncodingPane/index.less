@@ -1,0 +1,40 @@
+:global{
+  .encoding-wrap{
+    padding: 8px;
+    background: #132231;
+    height: 100%;
+    .encoding-shelf-group {
+      margin-bottom: 14px;
+      .encoding-shelf {
+        border: 1px solid #4ba5a9;
+        background: #175357;
+        border-radius: 3px;
+        display: flex;
+        margin-bottom: 8px;
+        width: 100%;
+        height: 26px;
+        .shelf-label {
+          display: block;
+          width: 52px;
+          margin: 0 0.2rem;
+          flex-shrink: 0;
+          color: #fff;
+          span {
+            padding-left: 0.3em;
+          }
+        }
+        .shelf-placeholder {
+          display: block;
+          width: 100%;
+          padding: 0 0.5em;
+          background-color: #09121c;
+          border-bottom-right-radius: 3px;
+          border-top-right-radius: 3px;
+          text-overflow: ellipsis;
+          font-weight: normal;
+          color: rgba(202, 233, 255, 0.5);
+        }
+      }
+    }
+  }
+}

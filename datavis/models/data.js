@@ -4,6 +4,8 @@ import {
   deleteData
 } from 'services/data';
 
+import { deleteOperator } from 'services/operator';
+
 export default {
   namespace: 'data',
   state: {
@@ -28,6 +30,7 @@ export default {
 
     * removeData({ payload }, { call, put }) {
       yield call(deleteData, payload);
+      yield call(deleteOperator, payload);
       yield put({
         type: 'delData',
         payload
