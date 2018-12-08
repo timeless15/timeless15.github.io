@@ -1,8 +1,8 @@
 /*
  * @Author: Jiangang Lu
  * @Date: 2018-09-19 10:56:36
- * @Last Modified by: Shiqi Han
- * @Last Modified time: 2018-12-01 15:14:55
+ * @Last Modified by: Jiangang Lu
+ * @Last Modified time: 2018-11-02 17:21:11
  */
 import React, { Component } from 'react';
 import { Icon } from 'antd';
@@ -118,7 +118,7 @@ class Layer extends Component {
   render() {
     const { id, charts } = this.props;
     const disabled = (id === ''); // 是否可编辑
-    // console.log('id', id, 'disabled', disabled);
+    console.log('id', id, 'disabled', disabled);
     let newCharts = _.cloneDeep(charts);
     newCharts = newCharts.reverse(); // 第一个为最近添加组件
     const chartIndex = _.findIndex(newCharts, item => item.id === id);

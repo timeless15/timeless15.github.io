@@ -3,6 +3,7 @@ import {
   searchOperator,
   updateOperator
 } from 'services/operator';
+import _ from 'lodash';
 
 export default {
   namespace: 'operator',
@@ -63,10 +64,24 @@ export default {
       };
     },
 
-    saveFieldType(state, { payload }) {
+    changeFieldType(state, { payload }) {
       return {
         ...state,
         ...payload
+      };
+    },
+
+    changeEncoding(state, { payload }) {
+      const { label, fieldDef } = payload;
+      const { encoding } = state;
+      if (_.isEmpty(fieldDef)) {
+        delete encoding[label];
+      } else {
+        encoding[label] = fieldDef;
+      }
+      return {
+        ...state,
+        encoding
       };
     },
 

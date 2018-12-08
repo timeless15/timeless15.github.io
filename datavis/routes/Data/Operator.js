@@ -2,13 +2,14 @@
  * @Author: Shiqi Han
  * @Date: 2018-11-25 15:14:00
  * @Last Modified by: Shiqi Han
- * @Last Modified time: 2018-12-03 17:38:51
+ * @Last Modified time: 2018-12-07 15:03:52
  */
-/* eslint-disable */
+/*eslint-disable*/
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import SplitPane from 'react-split-pane';
-import _ from 'lodash';
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContext } from 'react-dnd';
 import {
   DataHeader, FieldPane, ViewPane, EncodingPane
 } from 'components/Data';
@@ -23,6 +24,7 @@ class Operate extends Component {
     }
     this.handleGoBack = this.handleGoBack.bind(this);
     this.handlefieldTypeChange = this.handlefieldTypeChange.bind(this);
+    this.handleEncodingChange = this.handleEncodingChange.bind(this);
   }
 
   componentDidMount() {
@@ -57,6 +59,11 @@ class Operate extends Component {
     history.push('/data');
   }
 
+  /**
+   * 处理字段type变化
+   * @param {String} selectField 字段名称,
+   * @param {String} newType 新的类型
+   */
   handlefieldTypeChange(selectField, newType) {
     const { dispatch, operator } = this.props;
     const { fieldDefs } = operator;
@@ -66,24 +73,42 @@ class Operate extends Component {
       }
     });
     dispatch({
-      type: 'operator/saveFieldType',
+      type: 'operator/changeFieldType',
       payload: {
         fieldDefs
       }
     });
   }
 
+  /**
+   * 处理encoding变化
+   * @param {Object} fieldDef 字段, 可为空
+   * @param {String} label encoding的label
+   */
+  handleEncodingChange(fieldDef, label) {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'operator/changeEncoding',
+      payload: {
+        label,
+        fieldDef
+      }
+    });
+  }
+
   render() {
     const { operator } = this.props;
-    const { name, fieldDefs, encoding, data } = operator;
+    const {
+      name, fieldDefs, encoding, data
+    } = operator;
     return (
       <div className="page">
-        <DataHeader onBackClick={this.handleGoBack} name={name}/>
+        <DataHeader onBackClick={this.handleGoBack} name={name} />
         <SplitPane split="vertical" defaultSize={200} minSize={175} maxSize={350}>
-          <FieldPane fieldDefs={fieldDefs} onfieldTypeChange={this.handlefieldTypeChange}/>
+          <FieldPane fieldDefs={fieldDefs} onfieldTypeChange={this.handlefieldTypeChange} />
           <SplitPane split="vertical" defaultSize={235} minSize={200} maxSize={350}>
-            <EncodingPane />
-            <ViewPane data={data} fieldDefs={fieldDefs} encoding={encoding}/>
+            <EncodingPane encoding={encoding} onEncodingChange={this.handleEncodingChange} />
+            <ViewPane data={data} fieldDefs={fieldDefs} encoding={encoding} />
           </SplitPane>
         </SplitPane>
       </div>
@@ -91,4 +116,4 @@ class Operate extends Component {
   }
 }
 
-export default connect(({ operator }) => ({ operator }))(Operate);
+export default connect(({ operator }) => ({ operator }))(DragDropContext(HTML5Backend)(Operate));

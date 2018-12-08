@@ -1,0 +1,64 @@
+:global {
+   .encoding-shelf {
+      border: 1px solid #4ba5a9;
+      background: #175357;
+      border-radius: 3px;
+      display: flex;
+      margin-bottom: 8px;
+      width: 100%;
+      height: 26px;
+      .shelf-label {
+        display: block;
+        width: 52px;
+        margin: 0 0.2rem;
+        flex-shrink: 0;
+        color: #fff;
+        span {
+          padding-left: 0.3em;
+        }
+      }
+      .shelf-placeholder,
+      .shelf-placeholder-over,
+      .shelf-placeholder-active {
+        display: block;
+        width: 100%;
+        padding: 0 0.5em;
+        border-bottom-right-radius: 3px;
+        border-top-right-radius: 3px;
+        text-overflow: ellipsis;
+        font-weight: normal;
+      }
+      .shelf-placeholder{
+        background-color: #09121c;
+        color: rgba(202, 233, 255, 0.5);
+      }
+      .shelf-placeholder-over {
+        background-color: #42edf8;
+        color: #09121c;
+      }
+      .shelf-placeholder-active {
+        background-color: #4ba5a9;
+        color: #09121c;
+      }
+      .shelf-fieldWrap {
+        flex-grow: 1;
+        box-sizing: border-box;
+        width: calc(~"100% - 58.4px");
+        .field-list-item {
+          .field-pill {
+            border: 0px;
+            height: 24px;
+            background-color: #062135;
+            color: #42edf8;
+            padding-left: 12px;
+            .field-text {
+              color: #42edf8;
+            }
+            .field-close:hover{
+               color: #fff;
+            }
+          }
+        }
+      }
+   }
+}

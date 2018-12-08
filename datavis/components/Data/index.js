@@ -1,7 +1,7 @@
-import DataHeader from './Header';
-import FieldPane from './FieldPane';
-import EncodingPane from './EncodingPane';
-import ViewPane from './ViewPane';
+import DataHeader from './Gui/Header';
+import FieldPane from './Gui/FieldPane';
+import EncodingPane from './Gui/EncodingPane';
+import ViewPane from './Gui/ViewPane';
 
 export {
   DataHeader,
