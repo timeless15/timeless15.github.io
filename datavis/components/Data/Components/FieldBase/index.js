@@ -2,7 +2,7 @@
  * @Author: Shiqi Han
  * @Date: 2018-12-07 14:46:33
  * @Last Modified by: Shiqi Han
- * @Last Modified time: 2018-12-07 15:27:37
+ * @Last Modified time: 2018-12-09 21:44:40
  */
 
 import React, { Component } from 'react';
@@ -47,6 +47,8 @@ class FieldBase extends Component {
     const { onfieldTypeChange } = this.props;
     const newType = e.target.value;
     onfieldTypeChange(selectField, newType);
+    // TODO change type时无法触发子组件更新，只能用forceUpdate暂时处理
+    this.forceUpdate();
   }
 
   /**
@@ -70,7 +72,7 @@ class FieldBase extends Component {
         if (!isInEncoding) {
           renderEle = (
             <Popover title="TYPE" content={this.popContent(fieldDef)} placement="bottomLeft" trigger="click">
-              <Icon type="caret-down" style={{ visibility: isInEncoding ? 'hidden' : 'visible' }} />
+              <Icon type="caret-down" />
             </Popover>
           );
         }
