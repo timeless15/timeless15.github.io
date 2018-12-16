@@ -2,7 +2,7 @@
  * @Author: Shiqi Han
  * @Date: 2018-11-25 15:14:00
  * @Last Modified by: Shiqi Han
- * @Last Modified time: 2018-12-07 15:03:52
+ * @Last Modified time: 2018-12-15 16:00:15
  */
 /*eslint-disable*/
 import React, { Component } from 'react';
@@ -34,15 +34,6 @@ class Operate extends Component {
       dispatch({
         type: 'operator/searchOperator',
         payload: id
-      });
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.operator !== prevProps.operator) {
-      this.setState({
-        originData: this.props.operator.data,
-        fieldDefs: this.props.operator.fieldDefs
       });
     }
   }

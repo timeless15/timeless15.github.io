@@ -2,7 +2,7 @@
  * @Author: Shiqi Han
  * @Date: 2018-12-01 15:27:19
  * @Last Modified by: Shiqi Han
- * @Last Modified time: 2018-12-07 15:01:57
+ * @Last Modified time: 2018-12-09 21:42:43
  */
 
 import React, { Component } from 'react';
@@ -26,7 +26,7 @@ class FieldPane extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
-      this.renderFieldsList();
+      // this.renderFieldsList();
     }
   }
 

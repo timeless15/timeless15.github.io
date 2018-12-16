@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,height=device-height">
+    <title>DataSet State</title>
+    <style>
+      ::-webkit-scrollbar{display:none;}
+      html,body{overflow:hidden;height:100%;margin:0;}
+    </style>
+</head>
+<body>
+<div id="c1"></div>
+<div id="c2"></div>
+<script>/*Fixing iframe window.innerHeight 0 issue in Safari*/document.body.clientHeight;</script>
+<script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.g2-3.4.1/dist/g2.min.js"></script>
+<script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.10.1/dist/data-set.min.js"></script>
+<script src="https://gw.alipayobjects.com/os/antv/assets/lib/jquery-3.2.1.min.js"></script>
+<script src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
+
+<script>
+require.config({
+  paths: {
+    datalib: './datalib/datalib'
+  }
+});
+ 
+require(['datalib'], function(dl) {
+  debugger;
+  dl.type.infer(['Jan 1 2000','Feb 1 2000']);
+});
+
+$.getJSON('./data/mobile_os_market_share.json', function(data) {
+	var ds = new DataSet();
+	var dv1 = ds.createView('Share').source(data);
+	var dv2 = ds.createView('Year').source(data);
+  dv1.transform({
+    type: 'bin.histogram',
+	  field: 'Share',             // 对应数轴上的一个点
+	  binWidth: 10,           // 分箱步长（会覆盖bins选项）
+	  offset: 0,              // 分箱偏移量
+	  groupBy: [],            // 分组（用于层叠直方图）
+	  as: [ 'x', 'count' ], 
+  });
+  dv2.transform({
+  	type: 'aggregate',
+  	operations: ['count'],
+  	as: ['count'],
+  	groupBy: ['Year']
+  });
+  dv2.transform({
+  	type: 'pick',
+  	fields: ['Year', 'count']
+  });
+  console.log(dv1, dv2);
+  const chart1 = new G2.Chart({
+    id: 'c1',
+    width: 290,
+    height: 280
+  });
+  chart1.source(dv1);
+  chart1.interval().position('x*count');
+  chart1.render();
+  const chart2 = new G2.Chart({
+  	id: 'c2',
+  	width: 290,
+  	height: 280
+  });
+  chart2.source(dv2);
+  chart2.interval().position('Year*count');
+  chart2.render();
+})
+</script>
+</body>
+</html>

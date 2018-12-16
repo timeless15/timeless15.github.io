@@ -1,41 +1,83 @@
 import React, { Component } from 'react';
-import G2 from '@antv/g2';
-import { View } from '@antv/data-set';
+import { DataSet } from '@antv/data-set';
+import PlotBase from '../../Components/PlotBase';
 import './index.less';
 
 /*eslint-disable*/
 class ViewPane extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      ds: null
+    };
+    this.countStatistics = this.countStatistics.bind(this);
   }
 
   componentDidMount() {
+    this.countStatistics();
   }
 
   componentDidUpdate(prevProps) {
-    if(prevProps !== this.props) {
-      // this.renderChart();
+    if(this.props !== prevProps) {
+      this.countStatistics();
     }
   }
 
-  renderChart() {
-    console.log(this.props.data);
-    const dv = new View();
-    dv.source(this.props.data);
-    const chart = new G2.Chart({
-      id: 'mountNode',
-      width: 600,
-      height: 400
+  // 创建dataset，根据每个字段的类型进行count统计
+  countStatistics() {
+    const { fieldDefs, data } = this.props;
+    const ds = new DataSet();
+    fieldDefs.forEach((fieldDef) => {
+      const { field, type } = fieldDef;
+      const dv = ds.createView(field).source(data);
+      if (type === 'linear') {
+        dv.transform({
+          type: 'bin.histogram',
+          field,             // 对应数轴上的一个点
+          binWidth: 10,           // 分箱步长（会覆盖bins选项）
+          offset: 0,              // 分箱偏移量
+          as: [ field, 'count' ],
+        })
+      } else if (type === 'cat') {
+        dv.transform({
+          type: 'aggregate',
+          operations: ['count'],
+          as: ['count'],
+          groupBy: [field]
+        });
+        dv.transform({
+          type: 'pick',
+          fields: [field, 'count']
+        });
+      } else if (type === 'time') {
+        
+      }
     });
-    chart.source(dv);
-    chart.line().position('date*price').label;
-    chart.render();
+    this.setState({
+      ds
+    });
+  }
+
+  renderPlotBaseList() {
+    const { ds } = this.state;
+    let plotList;
+    if (ds) {
+      const { views } = ds;
+      plotList = Object.keys(views).map( (key, index) => (
+        <PlotBase key={key} id={`plot${index}`} dv={views[key]}></PlotBase>
+      ));
+    }
+    return plotList;
   }
 
   render() {
+    
     return (
       <div className='view-wrap'>
-        <div id='mountNode'></div>
+        <h2>Related Views</h2>
+        <div className="plot-list">
+          {this.renderPlotBaseList()}
+        </div>
       </div>
     );
   }

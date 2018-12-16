@@ -2,7 +2,7 @@
  * @Author: Shiqi Han
  * @Date: 2018-11-21 12:05:01
  * @Last Modified by: Shiqi Han
- * @Last Modified time: 2018-12-03 17:17:20
+ * @Last Modified time: 2018-12-16 23:00:44
  */
 
 import React, { Component } from 'react';
@@ -14,14 +14,24 @@ import {
 } from 'antd';
 import './Listview.less';
 import reactCss from 'reactcss';
+/* eslint-disable */
 
 const FormItem = Form.Item;
 const { Option } = Select;
 const dateRegex = /^(?:(?!0000)[0-9]{4}([-/.]+)(?:(?:0?[1-9]|1[0-2])\1(?:0?[1-9]|1[0-9]|2[0-8])|(?:0?[13-9]|1[0-2])\1(?:29|30)|(?:0?[13578]|1[02])\1(?:31))|(?:[0-9]{2}(?:0[48]|[2468][048]|[13579][26])|(?:0[48]|[2468][048]|[13579][26])00)([-/.]?)0?2\2(?:29))(\s+([01]|([01][0-9]|2[0-3])):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9]))?$/;
 const TYPES = {
-  LINEAR: 'linear',
-  CAT: 'cat',
-  TIME: 'time'
+  QUANTITATIVE: 'linear', // 数值型
+  NOMINAL: 'cat', // 类别型
+  TIME: 'time' // 时间 特殊的连续数值型
+  // 另外还有一种有序型ORIDINAL，归类为cat。
+  // 对于整数型数据，有可能是linear，也有可能是cat。基于经验判断，整数类型的基数相对较低且不同的值小于一定数量时，判断为cat
+};
+
+const TESTS = {
+  boolean: x => x === 'true' || x === 'false' || _.isBoolean(x),
+  integer: x => TESTS.number(x) && (x=+x) === ~~x,
+  number: x => !isNaN(+x) && !_.isDate(x),
+  date: x => !isNaN(Date.parse(x))
 };
 
 class Listview extends Component {
@@ -64,12 +74,31 @@ class Listview extends Component {
     const fieldDefs = [];
     keys.forEach((key) => {
       const value = data[key];
-      let type = TYPES.LINEAR;
-      if (_.isString(value)) {
-        type = TYPES.CAT;
-      // TODO 时间判断
-      } else if (dateRegex.test(value)) {
+      const types = ['boolean', 'integer', 'number', 'date'];
+      let type;
+      for(let i=0; i<types.length; i++){
+        if(!_.isNull(value) && !TESTS[types[i]](value)) {
+          types.splice(i, 1);
+          i -= 1;
+        }
+      }
+      // if no types left, return 'string'
+      if (types.length === 0) {
+        types.push('string');
+      }
+      if(types[0] === 'number') {
+        type = TYPES.QUANTITATIVE;
+      } else if(types[0] === 'integer') {
+        // TODO 当整数类型的基数相对较低且不同的值小于选项中指定的数量时，使用nominal
+        if (value < 10) {
+          type = TYPES.NOMINAL;
+        } else {
+          type = TYPES.QUANTITATIVE;
+        }
+      } else if(types[0] === 'date') {
         type = TYPES.TIME;
+      } else {
+        type = TYPES.NOMINAL;
       }
       fieldDefs.push({
         field: key,
