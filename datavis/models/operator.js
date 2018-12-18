@@ -12,7 +12,8 @@ export default {
     name: '',
     data: [],
     fieldDefs: [],
-    encoding: {}
+    encoding: {},
+    schema: {} // 每个字段的统计
   },
   effects: {
     // 新建配置
@@ -39,7 +40,7 @@ export default {
   reducers: {
     newOperator(state, { payload }) {
       const {
-        data, name, id, fieldDefs, encoding
+        data, name, id, fieldDefs, encoding, schema
       } = payload;
       return {
         ...state,
@@ -47,20 +48,22 @@ export default {
         name,
         data,
         fieldDefs,
-        encoding
+        encoding,
+        schema
       };
     },
 
     saveOperator(state, { payload }) {
       const {
-        data, name, id, fieldDefs, encoding
+        data, name, id, fieldDefs, encoding, schema
       } = payload;
       return {
         id,
         name,
         data,
         fieldDefs,
-        encoding
+        encoding,
+        schema
       };
     },
 
@@ -91,7 +94,8 @@ export default {
         name: '',
         data: [],
         fieldDefs: [],
-        encoding: {}
+        encoding: {},
+        schema: {}
       };
     }
   }

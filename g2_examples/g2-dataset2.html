@@ -26,7 +26,6 @@ require.config({
 });
  
 require(['datalib'], function(dl) {
-  debugger;
   dl.type.infer(['Jan 1 2000','Feb 1 2000']);
 });
 
@@ -37,21 +36,22 @@ $.getJSON('./data/mobile_os_market_share.json', function(data) {
   dv1.transform({
     type: 'bin.histogram',
 	  field: 'Share',             // 对应数轴上的一个点
-	  binWidth: 10,           // 分箱步长（会覆盖bins选项）
+	  bins: 9,           
 	  offset: 0,              // 分箱偏移量
 	  groupBy: [],            // 分组（用于层叠直方图）
 	  as: [ 'x', 'count' ], 
   });
   dv2.transform({
   	type: 'aggregate',
-  	operations: ['count'],
-  	as: ['count'],
-  	groupBy: ['Year']
+    fields: ['Year'], 
+  	operations: ['sumSimple'],
+  	as: ['product'],
+  	// groupBy: ['Year']
   });
-  dv2.transform({
-  	type: 'pick',
-  	fields: ['Year', 'count']
-  });
+  // dv2.transform({
+  // 	type: 'pick',
+  // 	fields: ['Year', 'count']
+  // });
   console.log(dv1, dv2);
   const chart1 = new G2.Chart({
     id: 'c1',

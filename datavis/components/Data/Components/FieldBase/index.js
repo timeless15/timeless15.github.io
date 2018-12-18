@@ -2,7 +2,7 @@
  * @Author: Shiqi Han
  * @Date: 2018-12-07 14:46:33
  * @Last Modified by: Shiqi Han
- * @Last Modified time: 2018-12-09 21:44:40
+ * @Last Modified time: 2018-12-17 11:05:08
  */
 
 import React, { Component } from 'react';
@@ -58,21 +58,22 @@ class FieldBase extends Component {
   popContent(fieldDef) {
     return (
       <Radio.Group onChange={this.fieldTypeChange.bind(this, fieldDef.field)} value={fieldDef.type}>
-        <Radio value="linear">数值</Radio>
-        <Radio value="cat">分类</Radio>
+        <Radio value="linear">Quantitative</Radio>
+        <Radio value="cat">Nominal</Radio>
       </Radio.Group>
     );
   }
 
   renderFieldAction(action) {
     const { fieldDef, isInEncoding, onEncodingClose } = this.props;
+    const { type } = fieldDef;
     let renderEle;
     switch (action) {
       case 'caret-down':
         if (!isInEncoding) {
           renderEle = (
             <Popover title="TYPE" content={this.popContent(fieldDef)} placement="bottomLeft" trigger="click">
-              <Icon type="caret-down" />
+              <Icon type="caret-down" style={{ visibility: type === 'time' ? 'hidden' : 'visible' }} />
             </Popover>
           );
         }

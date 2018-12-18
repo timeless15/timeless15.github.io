@@ -2,7 +2,7 @@
  * @Author: Shiqi Han
  * @Date: 2018-11-25 15:14:00
  * @Last Modified by: Shiqi Han
- * @Last Modified time: 2018-12-15 16:00:15
+ * @Last Modified time: 2018-12-18 13:49:06
  */
 /*eslint-disable*/
 import React, { Component } from 'react';
@@ -90,7 +90,7 @@ class Operate extends Component {
   render() {
     const { operator } = this.props;
     const {
-      name, fieldDefs, encoding, data
+      name, fieldDefs, encoding, data, schema
     } = operator;
     return (
       <div className="page">
@@ -99,7 +99,7 @@ class Operate extends Component {
           <FieldPane fieldDefs={fieldDefs} onfieldTypeChange={this.handlefieldTypeChange} />
           <SplitPane split="vertical" defaultSize={235} minSize={200} maxSize={350}>
             <EncodingPane encoding={encoding} onEncodingChange={this.handleEncodingChange} />
-            <ViewPane data={data} fieldDefs={fieldDefs} encoding={encoding} />
+            <ViewPane data={data} fieldDefs={fieldDefs} encoding={encoding} schema={schema}/>
           </SplitPane>
         </SplitPane>
       </div>
