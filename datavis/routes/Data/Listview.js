@@ -2,7 +2,7 @@
  * @Author: Shiqi Han
  * @Date: 2018-11-21 12:05:01
  * @Last Modified by: Shiqi Han
- * @Last Modified time: 2018-12-18 13:43:02
+ * @Last Modified time: 2018-12-19 17:03:32
  */
 
 import React, { Component } from 'react';
@@ -13,8 +13,8 @@ import {
 } from 'antd';
 // import _ from 'lodash';
 // import stats from 'src/vendor/simpleStatistics.js';
-import buidDataSchema from 'components/Data/Components/DataProcess/schema';
-import buildDataField from 'components/Data/Components/DataProcess/fieldDef';
+import buidDataSchema from 'components/Data/Tools/DataProcess/schema';
+import buildDataField from 'components/Data/Tools/DataProcess/fieldDef';
 import './Listview.less';
 import reactCss from 'reactcss';
 
@@ -182,7 +182,10 @@ class Listview extends Component {
               name: values.name,
               data,
               fieldDefs,
-              encoding: {},
+              spec: {
+                geom: 'auto',
+                encoding: {}
+              },
               schema
             }
           });

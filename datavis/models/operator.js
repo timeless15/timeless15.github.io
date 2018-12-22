@@ -12,7 +12,10 @@ export default {
     name: '',
     data: [],
     fieldDefs: [],
-    encoding: {},
+    spec: {
+      geom: '',
+      encoding: {}
+    },
     schema: {} // 每个字段的统计
   },
   effects: {
@@ -40,7 +43,7 @@ export default {
   reducers: {
     newOperator(state, { payload }) {
       const {
-        data, name, id, fieldDefs, encoding, schema
+        data, name, id, fieldDefs, spec, schema
       } = payload;
       return {
         ...state,
@@ -48,21 +51,21 @@ export default {
         name,
         data,
         fieldDefs,
-        encoding,
+        spec,
         schema
       };
     },
 
     saveOperator(state, { payload }) {
       const {
-        data, name, id, fieldDefs, encoding, schema
+        data, name, id, fieldDefs, spec, schema
       } = payload;
       return {
         id,
         name,
         data,
         fieldDefs,
-        encoding,
+        spec,
         schema
       };
     },
@@ -76,7 +79,8 @@ export default {
 
     changeEncoding(state, { payload }) {
       const { label, fieldDef } = payload;
-      const { encoding } = state;
+      const { spec } = state;
+      const { encoding } = spec;
       if (_.isEmpty(fieldDef)) {
         delete encoding[label];
       } else {
@@ -84,7 +88,16 @@ export default {
       }
       return {
         ...state,
-        encoding
+        spec
+      };
+    },
+
+    changeGeomType(state, { payload }) {
+      const { spec } = state;
+      spec.geom = payload;
+      return {
+        ...state,
+        spec
       };
     },
 
@@ -94,7 +107,10 @@ export default {
         name: '',
         data: [],
         fieldDefs: [],
-        encoding: {},
+        spec: {
+          geom: 'auto',
+          encoding: {}
+        },
         schema: {}
       };
     }

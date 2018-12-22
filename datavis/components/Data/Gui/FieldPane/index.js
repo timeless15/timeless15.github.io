@@ -2,17 +2,20 @@
  * @Author: Shiqi Han
  * @Date: 2018-12-01 15:27:19
  * @Last Modified by: Shiqi Han
- * @Last Modified time: 2018-12-09 21:42:43
+ * @Last Modified time: 2018-12-21 15:42:59
  */
 
 import React, { Component } from 'react';
 import FieldBase from '../../Components/FieldBase';
+import CONSTANTS from '../../Tools/DataProcess/constants.js';
 import './index.less';
 
 /** props
  * fieldDefs,
  * onfieldTypeChange
  */
+const { TYPES } = CONSTANTS;
+
 class FieldPane extends Component {
   constructor(props) {
     super(props);
@@ -41,6 +44,7 @@ class FieldPane extends Component {
         <FieldBase
           fieldDef={item}
           isInEncoding={false}
+          isShowCaretDown={item.type !== TYPES.TIME}
           draggable
           key={item.field}
           onfieldTypeChange={onfieldTypeChange}

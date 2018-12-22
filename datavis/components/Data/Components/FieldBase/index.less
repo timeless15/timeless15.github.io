@@ -2,6 +2,7 @@
   .field-list-item{
     width: 100%;
     .field-pill {
+      position: relative;
       width: 100%;
       display: flex;
       vertical-align: middle;
@@ -22,6 +23,14 @@
         margin-left: 6px;
         color: #fff;
       }
+      .caret-down {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      .field-type {
+        margin-left: 17px;
+      }
       .field-type,
       .field-filter,
       .field-add,
@@ -29,7 +38,7 @@
         flex-shrink: 0;
         padding-right: 2px;
       }
-      .field-type .anticon-caret-down,
+      .caret-down,
       .field-filter,
       .field-add,
       .field-close {
@@ -39,5 +48,12 @@
         }
       }
     }
+  }
+  .ant-radio-group {
+    width: 100%;
+  }
+  .ant-radio-wrapper {
+    width: 50%;
+    margin-right: 0px;
   }
 }

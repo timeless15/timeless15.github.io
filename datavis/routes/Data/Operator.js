@@ -2,7 +2,7 @@
  * @Author: Shiqi Han
  * @Date: 2018-11-25 15:14:00
  * @Last Modified by: Shiqi Han
- * @Last Modified time: 2018-12-18 13:49:06
+ * @Last Modified time: 2018-12-20 11:37:57
  */
 /*eslint-disable*/
 import React, { Component } from 'react';
@@ -25,6 +25,7 @@ class Operate extends Component {
     this.handleGoBack = this.handleGoBack.bind(this);
     this.handlefieldTypeChange = this.handlefieldTypeChange.bind(this);
     this.handleEncodingChange = this.handleEncodingChange.bind(this);
+    this.handleGeomChange = this.handleGeomChange.bind(this);
   }
 
   componentDidMount() {
@@ -87,10 +88,22 @@ class Operate extends Component {
     });
   }
 
+  /**
+   * 处理几何标记geom变化
+   * @param {String} label encoding的label
+   */
+  handleGeomChange(type) {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'operator/changeGeomType',
+      payload: type
+    });
+  }
+
   render() {
     const { operator } = this.props;
     const {
-      name, fieldDefs, encoding, data, schema
+      name, fieldDefs, spec, data, schema
     } = operator;
     return (
       <div className="page">
@@ -98,8 +111,8 @@ class Operate extends Component {
         <SplitPane split="vertical" defaultSize={200} minSize={175} maxSize={350}>
           <FieldPane fieldDefs={fieldDefs} onfieldTypeChange={this.handlefieldTypeChange} />
           <SplitPane split="vertical" defaultSize={235} minSize={200} maxSize={350}>
-            <EncodingPane encoding={encoding} onEncodingChange={this.handleEncodingChange} />
-            <ViewPane data={data} fieldDefs={fieldDefs} encoding={encoding} schema={schema}/>
+            <EncodingPane spec={spec} onEncodingChange={this.handleEncodingChange} onGeomTypeChange={this.handleGeomChange}/>
+            <ViewPane fieldDefs={fieldDefs} data={data} spec={spec} schema={schema}/>
           </SplitPane>
         </SplitPane>
       </div>

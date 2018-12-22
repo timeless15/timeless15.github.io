@@ -2,12 +2,13 @@
  * @Author: Shiqi Han
  * @Date: 2018-12-07 14:48:24
  * @Last Modified by: Shiqi Han
- * @Last Modified time: 2018-12-07 15:41:50
+ * @Last Modified time: 2018-12-21 17:36:41
  */
 
 import React, { Component } from 'react';
 import { DropTarget } from 'react-dnd';
 import _ from 'lodash';
+import CONSTANTS from '../../Tools/DataProcess/constants.js';
 import FieldBase from '../FieldBase';
 import './index.less';
 
@@ -17,6 +18,8 @@ import './index.less';
  * fieldDef,
  * onEncodingChange
 */
+const { TYPES } = CONSTANTS;
+
 class EncodingBase extends Component {
   constructor(props) {
     super(props);
@@ -60,6 +63,7 @@ class EncodingBase extends Component {
         <FieldBase
           fieldDef={fieldDef}
           isInEncoding
+          isShowCaretDown={fieldDef.type !== TYPES.NOMINAL}
           draggable
           onEncodingClose={this.handleFieldClose}
         />

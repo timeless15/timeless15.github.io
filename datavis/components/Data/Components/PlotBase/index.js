@@ -2,12 +2,13 @@
  * @Author: Shiqi Han
  * @Date: 2018-12-15 16:40:45
  * @Last Modified by: Shiqi Han
- * @Last Modified time: 2018-12-18 16:13:31
+ * @Last Modified time: 2018-12-21 15:25:35
  */
 
 /* eslint-disable */
 import React, {Component} from 'react';
 import G2 from '@antv/g2';
+import _ from 'lodash';
 import './index.less';
 
 class PlotBase extends Component {
@@ -17,7 +18,7 @@ class PlotBase extends Component {
       chart: null
     };
     this.renderChart = this.renderChart.bind(this);
-    this.updateChart = this.updateChart.bind(this);
+    this.initChart = this.initChart.bind(this);
   }
 
   componentDidMount() {
@@ -25,53 +26,77 @@ class PlotBase extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if(this.props !== prevProps) {
-      this.updateChart();
-    }
+    //TODO 减少不必要的渲染和更细
+    // console.log(prevProps.spec.encoding === this.props.spec.encoding);
+    this.renderChart();
   }
 
-  // 初始化chart
-  // TODO width和height的计算
+  initChart() {
+    const { id } = this.props;
+    let { chart } = this.state;
+    if (!chart && id) {
+      chart = new G2.Chart({
+        id,
+        width: 300,
+        height: 290
+      });
+      this.setState({
+        chart
+      });
+    }
+    return chart;
+  }
+
   renderChart() {
-    const { id, dv, field } = this.props;
-    const chart = new G2.Chart({
-      id,
-      width: 300,
-      height: 290
-    });
-    const posArr = Object.keys(dv.rows[0]); // [field, 'count']
-    const margin = 1 / dv.rows.length;
-    chart.source(dv, {
-      range: [margin / 4, 1 - margin / 4]
-    });
-    chart.interval().position(posArr);
-    chart.scale('count', {
-      alias: 'Number of Records'
-    });
-    chart.axis(field, {
+    const { dv, spec } = this.props;
+    const { encoding } = spec;
+    let { geom } = spec;
+    const chart = this.initChart();
+    const { x, y } = encoding;
+    let defs = {};
+    defs[x.field] = {
+      type: x.type,
+      alias: this.handleFieldAlias(x)
+    }
+    defs[y.field] = {
+      type: y.type,
+      alias: this.handleFieldAlias(y)
+    }
+    // TODO auto geom
+    if ( geom === 'auto' ) {
+      geom = 'point';
+    }
+    chart.clear();
+    chart.source(dv, defs);
+    const geomObj = chart[geom]();
+    geomObj.position(`${x.field}*${y.field}`);
+    chart.axis(x.field, {
       title: true
     });
-    chart.axis('count', {
+    chart.axis(y.field, {
       title: true
     });
     chart.render();
-    this.setState({
-      chart
-    });
   }
-  
-  // 数据源更新时，更新chart
-  updateChart() {
-    const { chart } = this.state;
-    const { dv } = this.props;
-    chart.source(dv);
-    chart.repaint();
+
+  handleFieldAlias(fieldDef) {
+    const { fn } = fieldDef;
+    if (fn === 'count') {
+      return 'Number of Records'
+    } else if (_.isEmpty(fn)) {
+      return fieldDef.field;
+    } else {
+      return `${fieldDef.field} (${fn})`
+    }
   }
 
   render() {
     const {id} = this.props;
     return (
-      <div className="plot-list-item" id={id}></div>
+      <div>
+        <div className="plot-list-item" id={id}></div>
+      </div>
+      
     )
   }
 };

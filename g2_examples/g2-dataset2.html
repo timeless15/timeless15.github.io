@@ -29,46 +29,64 @@ require(['datalib'], function(dl) {
   dl.type.infer(['Jan 1 2000','Feb 1 2000']);
 });
 
-$.getJSON('./data/mobile_os_market_share.json', function(data) {
-	var ds = new DataSet();
-	var dv1 = ds.createView('Share').source(data);
-	var dv2 = ds.createView('Year').source(data);
-  dv1.transform({
-    type: 'bin.histogram',
-	  field: 'Share',             // 对应数轴上的一个点
-	  bins: 9,           
-	  offset: 0,              // 分箱偏移量
-	  groupBy: [],            // 分组（用于层叠直方图）
-	  as: [ 'x', 'count' ], 
-  });
-  dv2.transform({
-  	type: 'aggregate',
-    fields: ['Year'], 
-  	operations: ['sumSimple'],
-  	as: ['product'],
-  	// groupBy: ['Year']
-  });
-  // dv2.transform({
-  // 	type: 'pick',
-  // 	fields: ['Year', 'count']
-  // });
-  console.log(dv1, dv2);
-  const chart1 = new G2.Chart({
+// $.getJSON('./data/mobile_os_market_share.json', function(data) {
+// 	var ds = new DataSet();
+// 	var dv1 = ds.createView('Share').source(data);
+// 	var dv2 = ds.createView('Year').source(data);
+//   dv1.transform({
+//     type: 'bin.histogram',
+// 	  field: 'Share',             // 对应数轴上的一个点
+// 	  bins: 9,           
+// 	  offset: 0,              // 分箱偏移量
+// 	  groupBy: [],            // 分组（用于层叠直方图）
+// 	  as: [ 'x', 'count' ], 
+//   });
+//   dv2.transform({
+//   	type: 'aggregate',
+//     fields: ['Year'], 
+//   	operations: ['sumSimple'],
+//   	as: ['product'],
+//   	// groupBy: ['Year']
+//   });
+//   // dv2.transform({
+//   // 	type: 'pick',
+//   // 	fields: ['Year', 'count']
+//   // });
+//   console.log(dv1, dv2);
+//   const chart1 = new G2.Chart({
+//     id: 'c1',
+//     width: 290,
+//     height: 280
+//   });
+//   chart1.source(dv1);
+//   chart1.interval().position('x*count');
+//   chart1.render();
+//   const chart2 = new G2.Chart({
+//   	id: 'c2',
+//   	width: 290,
+//   	height: 280
+//   });
+//   chart2.source(dv2);
+//   chart2.interval().position('Year*count');
+//   chart2.render();
+// })
+
+$.getJSON('./data/system.json', function(data){
+  var ds = new DataSet();
+  var dv = ds.createView().source(data);
+  const chart = new G2.Chart({
     id: 'c1',
-    width: 290,
-    height: 280
+    width: 300,
+    height: 290
   });
-  chart1.source(dv1);
-  chart1.interval().position('x*count');
-  chart1.render();
-  const chart2 = new G2.Chart({
-  	id: 'c2',
-  	width: 290,
-  	height: 280
+  chart.source(dv, {
+    time: {
+      type: 'time',
+      mask: 'hh:mm'
+    }
   });
-  chart2.source(dv2);
-  chart2.interval().position('Year*count');
-  chart2.render();
+  chart.line().position('time*avgRt');
+  chart.render();
 })
 </script>
 </body>
