@@ -71,21 +71,26 @@ require(['datalib'], function(dl) {
 //   chart2.render();
 // })
 
-$.getJSON('./data/system.json', function(data){
+$.getJSON('./data/anscombe.json', function(data){
   var ds = new DataSet();
   var dv = ds.createView().source(data);
+  console.log(dv);
+  dv.transform({
+    type: 'aggregate', // 别名summary
+  	fields: ['X', 'Y'],        // 统计字段集
+  	operations: ['min', 'max'],    // 统计操作集
+  	as: ['X', 'Y'],				// 存储字段集
+  	groupBy: []        
+  });
+  console.log(dv);
   const chart = new G2.Chart({
     id: 'c1',
     width: 300,
     height: 290
   });
-  chart.source(dv, {
-    time: {
-      type: 'time',
-      mask: 'hh:mm'
-    }
-  });
-  chart.line().position('time*avgRt');
+  chart.source(dv);
+  const geomObj = chart.point();
+  geomObj.position('X*Y');
   chart.render();
 })
 </script>
