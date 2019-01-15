@@ -1,0 +1,64 @@
+<html>
+    <head>
+        <meta chartset="utf-8">
+        <title>Line Chart</title>
+        <style type="text/css">
+        </style>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+    </head>
+    <body>
+    	<svg width="960" height="500"></svg>
+    	<script>
+		var svg = d3.select("svg"),
+		    margin = {top: 20, right: 20, bottom: 30, left: 50},
+		    width = +svg.attr("width")-margin.left-margin.right,
+		    height = +svg.attr("height")-margin.top-margin.bottom,
+	    	g = svg.append("g").attr("transform",`translate(${margin.left},${margin.top})`);
+
+	    var parseTime = d3.timeParse("%d-%b-%y");
+	    //scale
+	    var xScale = d3.scaleTime()
+	    				.rangeRound([0,width]);
+	    var yScale = d3.scaleLinear()
+	    				.rangeRound([height,0]);
+	    //line
+	    var linePath = d3.line()
+	    			.x(d=>xScale(d.date))
+	    			.y(d=>yScale(d.close))
+	    			.curve(d3.curveBasis);
+
+	    d3.tsv("data/AAPL.tsv",function(d){
+	    	//format
+	    	d.date = parseTime(d.date);
+	    	d.close = +d.close;
+	    	return d;
+	    },function(data){
+	    	xScale.domain(d3.extent(data,d=>d.date));
+	    	yScale.domain(d3.extent(data,d=>d.close));
+
+	    	g.append("path")
+	    		.datum(data)
+	    		.attr("d",linePath)
+	    		.attr("fill","none")
+	    		.attr("stroke","steelblue")
+	    		.attr("stroke-width",1.5);
+	    	g.append("g")
+	    		 .attr("transform",`translate(0,${height})`)
+	    		 .call(d3.axisBottom(xScale).ticks(5))
+	    		.select(".domain")
+	    		 .remove();
+	    	g.append('g')
+	    		 .call(d3.axisLeft(yScale))
+	    		.append("text")
+	    			.text("Price($)")
+	    			.attr("fill","#000")
+	    			.attr("transform","rotate(-90)")
+	    			.attr("y",6)
+	    			.attr("dy","0.71em")
+	    			.attr("text-anchor","end");
+	    			
+	    })
+	    // 出问题主要在绑定数据时，还是没有理解d3路径生成器
+    	</script>
+  </body>
+</html>

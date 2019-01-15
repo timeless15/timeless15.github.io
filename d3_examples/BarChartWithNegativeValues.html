@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Bar Chart with Negative Values</title>
+	<style type="text/css">
+		
+	</style>
+</head>
+<body>
+	<script src="//d3js.org/d3.v4.min.js"></script>
+	<script>
+		
+		var margin = {top:20,right:30,bottom:40,left:30},
+			width = 960 -margin.left-margin.right,
+			height = 500 -margin.top-margin.bottom;
+
+		var svg = d3.select("body").append("svg")
+					.attr("width",width+margin.left+margin.right)
+		   			.attr("height",height+margin.top+margin.bottom)
+		   			.append("g")
+		   				.attr("transform",`translate(${margin.left},${margin.top})`);
+
+		//scale range
+		var xScale = d3.scaleLinear().rangeRound([0,width]);
+		var yScale = d3.scaleBand().rangeRound([0,height]).padding(0.1);
+
+		d3.tsv("data/barChartNegativeData.tsv",function(error,data){
+			//format
+			data.forEach(d=>{d.value = +d.value})
+			//scale domain
+			xScale.domain(d3.extent(data,d=>d.value)).nice();
+			yScale.domain(data.map(d=>d.name));
+			svg.selectAll("rect")
+				.data(data)
+				.enter()
+				.append("rect")
+					.attr("width",d=>Math.abs(xScale(d.value)-xScale(0)))
+					.attr("height",yScale.bandwidth())
+					.attr("x",d=>xScale(d3.min([0,d.value])))
+					.attr("y",d=>yScale(d.name))
+					.attr("fill",d=>{
+						return d.value>0?"steelblue":"darkorange";
+					});
+			svg.append("g")
+				.attr("transform",`translate(0,${height})`)
+				.call(d3.axisBottom(xScale));
+			svg.append("g")
+				.attr("transform",`translate(${xScale(0)},0)`)
+				.call(d3.axisLeft(yScale))
+				.selectAll(".tick line")
+					.remove();
+		})
+	</script>
+</body>
+</html>

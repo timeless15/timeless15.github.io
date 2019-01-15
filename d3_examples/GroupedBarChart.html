@@ -1,0 +1,111 @@
+<html>
+    <head>
+        <meta chartset="utf-8">
+        <title>Grouped Bar Chart</title>
+        <style type="text/css">
+        </style>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+    </head>
+    <body>
+    	<svg width="960" height="500"></svg>
+    	<script>
+		var svg = d3.select("svg"),
+		    margin = {top: 20, right: 20, bottom: 30, left: 50},
+		    width = +svg.attr("width")-margin.left-margin.right,
+		    height = +svg.attr("height")-margin.top-margin.bottom,
+	    	g = svg.append("g").attr("transform",`translate(${margin.left},${margin.top})`);
+
+	    var xScale = d3.scaleBand()
+	    			.rangeRound([0,width])
+	    			.paddingInner(0.1);
+	    var xScaleIn = d3.scaleBand()
+	    			.padding(0.05)
+	    var yScale = d3.scaleLinear()
+	    			.rangeRound([height,0]);
+	    var colors = d3.scaleOrdinal()
+	    			.range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+	   	
+	   	d3.csv("data/populationPart.csv",function(d,_,columns){
+	   		for(var i=1;i<columns.length;i++){
+	   			d[columns[i]] = +d[columns[i]];
+	   		}
+	   		return d;
+	   	},function(data){
+
+	   		var keys = data.columns.slice(1)
+
+	   		xScale.domain(data.map(d=>d.State));
+	   		xScaleIn.rangeRound([0,xScale.bandwidth()])
+	   				.domain(keys);
+	   		yScale.domain([0,d3.max(data,d=>{
+	   			return d3.max(keys,key=>d[key])
+	   		})]);
+	   		colors.domain(keys);
+
+	   		var groups = g.selectAll("g")
+			   			.data(data)
+			   			.enter()
+			   			.append("g")
+			   			.attr("class","groups")
+			   				.attr("transform",d=>`translate(${xScale(d.State)},0)`)
+			   			.selectAll("rect")
+	   					.data(function(d){
+	   						 return keys.map(function(key){
+		   							return {
+		   								key:key,
+		   								value:d[key]
+		   							};
+	   							});
+	   					})
+	   					.enter()
+	   					.append("rect")
+	   						.attr("x",d=>xScaleIn(d.key))
+	   						.attr("y",d=>yScale(d.value))
+	   						.attr("width",xScaleIn.bandwidth())
+	   						.attr("height",d=>height-yScale(d.value))
+	   						.attr("fill",d=>colors(d.key));
+			   			
+			var labels = g.append("g")
+							.attr("class","labels")
+							.selectAll("g")
+							.data(keys.reverse())
+							.enter()
+							.append("g")
+								.attr("transform",(d,i)=>{return `translate(${width - margin.right},${i*20+margin.top})`})
+
+			labels.append("rect")
+					.attr("width",19)
+					.attr("height",19)
+					.attr("fill",d=>colors(d));
+
+			labels.append("text")
+					.text(d=>d)
+					.attr("x","0")
+					.attr("dx","-0.5em")
+					.attr("y","11")
+					.style("font","10px sans-serif")
+					.attr("text-anchor","end")
+
+			g.append("g")
+				.attr("class","axis")
+				.attr("transform", "translate(0," + height + ")")
+      			.call(d3.axisBottom(xScale))
+      			.select(".domain")
+      				.remove();
+
+      		g.append("g")
+		      .attr("class", "axis")
+		      .call(d3.axisLeft(yScale).ticks(null,"s"))
+		      	.append("text")
+		      		.text("Population")
+		      		.attr("fill","#000")
+		      		.attr("font-weight", "bold")
+		      		.attr("x",2)
+		      		.attr("y",-8)
+		      		.attr("dy","0.32em")
+		      		.attr("text-anchor","start");
+	   	})
+	   
+    	</script>
+  </body>
+</html>

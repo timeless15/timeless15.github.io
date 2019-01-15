@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Simple Bar Chart</title>
+	<style type="text/css">
+		
+	</style>
+</head>
+<body>
+	<svg class="chart">
+	</svg>
+	<script src="d3.v4.js"></script>
+	<script>
+		var svg = d3.select("svg"),
+			margin = {top:20,right:20,bottom:30,left:40},
+			width = 960 -margin.left-margin.right,
+			height = 500 -margin.top-margin.bottom;
+
+		svg.attr("width",width+margin.left+margin.right)
+		   .attr("height",height+margin.top+margin.bottom);
+
+		var chart = svg.append("g")
+					   .attr("class","chart")
+					   .attr("transform","translate("+margin.left +","+margin.top+")");
+		var tip = svg.append("text")
+					 .attr("class","tooltip");
+		//scale range
+		var yScale = d3.scaleLinear().rangeRound([height,0]);
+		var xScale = d3.scaleBand().rangeRound([0,width]).padding(0.1);
+
+		d3.csv("data/barChartData.csv",function(error,data){
+			//format
+			data.forEach(function(d){
+				d.frequency =+ d.frequency;
+			})
+			//scale domain
+			yScale.domain([0,d3.max(data,function(data){
+				return data.frequency;
+			})]);
+			xScale.domain(data.map(function(d){
+				return d.letter;
+			}))
+			chart.append("g")
+				 .attr("class","x axis")
+			     .attr("transform","translate(0," + height + ")")
+			     .call(d3.axisBottom(xScale));
+			chart.append("g")
+			     .call(d3.axisLeft(yScale));
+			chart.selectAll("rect")
+				 .data(data)
+				 .enter()
+				 .append("rect")
+				 .attr("width",xScale.bandwidth())
+				 .attr("height",function(d){
+				 	return height - yScale(d.frequency);
+				 })
+				 .attr("x",function(d){
+				 	return xScale(d.letter);
+				 })
+				 .attr("y",function(d){
+				 	return yScale(d.frequency);
+				 })
+				 .attr("fill","steelblue")
+				 .on("mouseover",function(d,i){
+				 	d3.select(this)
+				 	  .attr("fill","brown");
+				 	tip.style("display","inherit")
+				 	    .text(d.letter+":"+ (d.frequency*100).toFixed(2) + "%")
+				 	   .attr("x",xScale(d.letter)+30)
+				 	   .attr("y",yScale(d.frequency)+10)
+				 	   .attr("fill","black");
+				 })
+				 .on("mouseout",function(d,i){
+				 	d3.select(this)
+				 	  .transition()
+				 	  .duration(500)
+				 	  .attr("fill","steelblue");
+				 	tip.text("")
+				 	   .style("display","none");
+				 })
+		})
+	</script>
+</body>
+</html>

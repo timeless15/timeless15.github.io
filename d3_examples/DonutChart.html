@@ -1,0 +1,53 @@
+<html>
+    <head>
+        <meta chartset="utf-8">
+        <title>Donut Plot</title>
+        <style type="text/css">
+        </style>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+    </head>
+    <body>
+    	<svg width="960" height="500"></svg>
+    	<script>
+		var svg = d3.select("svg"),
+    		    margin = {top: 20, right: 20, bottom: 30, left: 40},
+    		    width = +svg.attr("width")-margin.left-margin.right,
+            height = +svg.attr("height")-margin.top-margin.bottom,
+    		    radius = Math.min(width,height)/2,
+    	    	g = svg.append("g").attr("transform",`translate(${margin.left},${margin.top})`);
+        var color = d3.scaleOrdinal(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+        var pie = d3.pie()
+                    .sort(null)
+                    .value(d=>d.population);
+
+        var path = d3.arc()
+                    .outerRadius(radius-10)
+                    .innerRadius(radius-70);
+        d3.csv("data/pieChart.csv",function(d){
+          d.population=+d.population;
+          return d;
+        },function(data){
+          var arc = g.selectAll(".arc")
+              .data(pie(data))
+              .enter()
+              .append("g")
+                .attr("class","arc")
+                .attr("transform",`translate(${width/2},${height/2})`)
+          arc.append("path")
+              .attr("d",path)
+              .attr("fill",d=>color(d.data.age))
+              .attr("stroke","#fff");
+          arc.append("text")
+              .text(d=>d.data.age)
+              .attr("transform",function(d){
+                return `translate(${path.centroid(d)})`;
+              })
+              .attr("dy", ".35em")
+              .style("font","10px sans-serif");
+
+        })
+
+    	</script>
+  </body>
+</html>

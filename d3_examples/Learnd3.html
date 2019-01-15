@@ -1,0 +1,514 @@
+<html>
+    <head>
+        <meta chartset="utf-8">
+        <title>Learn D3.js</title>
+        <style type="text/css">
+        </style>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+    </head>
+    <body>
+        <!--<button type="button" onclick="sort()">Sort</button>
+        <button type="button" onclick="add()">ADD</button>
+        <button type="button" onclick="remove()">REMOVE</button>
+        <script>
+            //bar chart
+            var dataset = [50, 43, 120, 87, 99, 167, 142];
+            var width = 400;
+            var height = 400;
+            var svg = d3.select("body")
+                        .append("svg")
+                        .attr("width",width)
+                        .attr("height",height);
+            var bars = svg.append("g")
+                        .attr("class","rect-bar");
+
+            var padding = {top:20,right:20,bottom:30,left:30};
+
+            var xScale = d3.scaleBand()
+                        .domain(d3.range(dataset.length))
+                        .rangeRound([0,width-padding.left-padding.right])
+                        .padding(0.2);
+            var yScale = d3.scaleLinear()
+                        .domain([0,d3.max(dataset)])
+                        .range([height-padding.top-padding.bottom,0]);
+
+            svg.append("g")
+                    .attr("class","axis")
+                    .attr("transform","translate("+padding.left+","+(height-padding.bottom)+")")
+                    .call(d3.axisBottom().scale(xScale));
+            svg.append("g")
+                    .attr("class","axis")
+                    .attr("transform","translate("+padding.left+","+padding.top+")")
+                    .call(d3.axisLeft().scale(yScale));     
+            draw();
+
+            function draw(){
+                var updateRect = bars.selectAll("rect").data(dataset);
+                var enterRect = updateRect.enter();
+                var exitRect = updateRect.exit();
+              
+                updateRect.attr("fill","steelblue")
+                        .attr("x",(d,i)=>padding.left+xScale(i))
+                        .attr("y",d=>yScale(d))
+                        .attr("width",xScale.bandwidth())
+                        .attr("height",d=>height - padding.bottom-yScale(d));
+                enterRect.append("rect")
+                        .attr("fill","steelblue")
+                        .attr("x",(d,i)=>padding.left+xScale(i))
+                        .attr("y",d=>yScale(d))
+                        .attr("width",xScale.bandwidth())
+                        .attr("height",d=>height - padding.bottom-yScale(d));
+                exitRect.remove();
+
+                var updateText = bars.selectAll("text").data(dataset);
+                var enterText = updateText.enter();
+                var exitText = updateText.exit();
+                updateText.attr("fill","white")
+                        .attr("font-size","14px")
+                        .attr("text-anchor","middle")
+                        .attr("x",(d,i)=>padding.left+xScale(i))
+                        .attr("y",d=>yScale(d))
+                        .attr("dx",xScale.bandwidth()/2)
+                        .attr("dy","1em")
+                        .text(d=>d);
+                enterText.append("text")
+                        .attr("fill","white")
+                        .attr("font-size","14px")
+                        .attr("text-anchor","middle")
+                        .attr("x",(d,i)=>padding.left+xScale(i))
+                        .attr("y",d=>yScale(d))
+                        .attr("dx",xScale.bandwidth()/2)
+                        .attr("dy","1em")
+                        .text(d=>d);
+                exitText.remove();
+
+            }
+            function sort(){
+                dataset.sort(d3.ascending);
+                draw();
+            }
+            function add(){
+                dataset.push(Math.floor(Math.random()*100));
+                draw();
+            }
+            function remove(){
+                dataset.pop();
+                draw(); 
+            }  
+        </script>
+        <script>
+            //scatter chart
+            var center = [[0.5,0.5],[0.7,0.8],[0.4,0.9],[0.11,0.32],[0.88,0.25],[0.75,0.12],[0.5,0.1],[0.2,0.3],[0.4,0.1],[0.6,0.7]];
+            var width = 400;
+            var height = 400;
+            var svg = d3.select("body")
+                        .append("svg")
+                        .attr("width",width)
+                        .attr("height",height);
+            var bars = svg.append("g")
+                        .attr("class","rect-bar");
+
+            var padding = {top:30,right:30,bottom:30,left:30};
+
+            var xScale = d3.scaleLinear()
+                        .domain([0,1.2*d3.max(center,function(d){
+                            return d[0];
+                        })])
+                        .range([0,width-padding.left-padding.right]);
+            var yScale = d3.scaleLinear()
+                        .domain([0,1.2*d3.max(center,function(d){
+                            return d[1];
+                        })])
+                        .range([height-padding.top-padding.bottom,0]);
+            var circle = svg.selectAll("circle")
+                            .data(center)
+                            .enter()
+                            .append("circle")
+                            .attr("fill","black")
+                            .attr("cx",d=>padding.left+xScale(d[0]))
+                            .attr("cy",d=>yScale(d[1]))
+                            .attr("r",5);
+            svg.append("g")
+                .attr("transform","translate("+padding.left+","+(height-padding.bottom)+")")
+                .call(d3.axisBottom().scale(xScale).ticks(5));
+            svg.append("g")
+                .attr("transform","translate("+padding.left+","+padding.top+")")
+                .call(d3.axisLeft().scale(yScale).ticks(5));
+        </script>
+        <script>
+            var width = 600;
+            var height =600;
+            var svg = d3.select("body").append("svg")
+                        .attr("width",width)
+                        .attr("height",height);
+
+            //line
+            /*var lines = [80,120,160,200,240,280];
+            var linePath = d3.line()
+                        .x(d=>d)
+                        .y((x,i)=>i%2==0?40:120)
+                        .defined(d=>d<200)
+                        .curve(d3.curveStep);
+            svg.append("path")
+                .attr("d",linePath(lines))
+                .attr("fill","none")
+                .attr("stroke","black")
+                .attr("stroke-width","3px");
+
+            var dataset = [80,120,130,70,60,90];
+            var areaPath = d3.area()
+                            .x((d,i)=>50+i*80)
+                            .y0((d,i)=>height/2)
+                            .y1((d,i)=>height/2-d)
+                            .curve(d3.curveBasis);
+            svg.append("path")
+                .attr("d",areaPath(dataset))
+                .attr("fill","yellow")
+                .attr("stroke","black")
+                .attr("stroke-width","3px");
+
+            //arc
+            var dataset = [{startAngle:0,endAngle:Math.PI*0.6},
+                           {startAngle:Math.PI*0.6,endAngle:Math.PI},
+                           {startAngle:Math.PI,endAngle:Math.PI*1.7},
+                           {startAngle:Math.PI*1.7,endAngle:Math.PI*2}];
+            var color = d3.schemeCategory10;
+            var arcPath = d3.arc()
+                            .innerRadius(0)
+                            .outerRadius(100);
+            svg.selectAll("path")
+                .data(dataset)
+                .enter()
+                .append("path")
+                .attr("d",d=>arcPath(d))
+                .attr("transform","translate(250,250)")
+                .attr("fill",(d,i)=>color[i])
+                .attr("stroke","black")
+                .attr("stroke-width","3px");
+            svg.selectAll("text")
+                .data(dataset)
+                .enter()
+                .append("text")
+                .attr("transform",d=>"translate(250,250)"+"translate("+arcPath.centroid(d) + ")")
+                .attr("text-anchor","middle")
+                .attr("fill","white")
+                .attr("font-size","18px")
+                .text(d=>Math.floor(d.endAngle-d.startAngle)*180/Math.PI+".");
+            
+            //symbol
+            var n = 30;
+            var dataset = [];
+            for(var i=0;i<n;i++){
+                dataset.push({
+                    size:Math.random()*30+200,
+                    type:d3.symbols[Math.floor(Math.random()*d3.symbols.length)]
+                })
+            }
+            var color = d3.schemeCategory20b;
+            var symbol = d3.symbol()
+                        .size(d=>d.size)
+                        .type(d=>d.type);
+            svg.selectAll()
+                .data(dataset)
+                .enter()
+                .append("path")
+                .attr("d",d=>symbol(d))
+                .attr("transform",(d,i)=>{
+                    var x = 100 + i%5 * 20;
+                    var y = 100 + Math.floor(i/5)*20;
+                    return "translate("+x+","+y+")";
+                })
+                .attr("fill",(d,i)=>color[i]);
+            
+            //chord
+            var dataset = {
+                source:{
+                    startAngle:0.2,
+                    endAngle:Math.PI*0.3,
+                    radius:100
+                },
+                target:{
+                    startAngle:Math.PI*1.0,
+                    endAngle:Math.PI*1.6,
+                    radius:100
+                }
+            }
+            var chord = d3.ribbon()
+                        .source(d=>d.source)
+                        .target(d=>d.target)
+                        .radius(200)
+                        .startAngle(d=>d.startAngle)
+                        .endAngle(d=>d.endAngle);
+
+            svg.append("path")
+                .attr("d",chord(dataset))
+                .attr("transform","translate(200,200)")
+                .attr("fill","yellow")
+                .attr("stroke","black")
+                .attr("stroke-width",3);*/
+
+            //Line chart
+            var dataset = [
+                {
+                    country:"China",
+                    gdp:[[2000,11920],[2001,13170],[2002,14550],
+                         [2003,16500],[2004,19440],[2005,22870],
+                         [2006,27930],[2007,35040],[2008,45470],
+                         [2009,51050],[2010,58490],[2011,73140],
+                         [2012,83860],[2013,103550]]
+                },{
+                    country:"Japan",
+                    gdp:[[2000,47310],[2001,41590],[2002,39800],
+                         [2003,43020],[2004,46550],[2005,45710],
+                         [2006,43560],[2007,43560],[2008,48490],
+                         [2009,50350],[2010,54950],[2011,59050],
+                         [2012,59370],[2013,48980]]
+                }
+            ];
+            var padding = {top:50,right:50,bottom:50,left:50};
+
+            var gdpmax = 0;
+            for(var i=0;i<dataset.length;i++){
+                var currGdp = d3.max(dataset[i].gdp,d=>d[1]);
+                if(currGdp>gdpmax){
+                    gdpmax = currGdp;
+                }
+            }
+
+            var xScale = d3.scaleLinear()
+                        .domain([2000,2013])
+                        .range([0,width-padding.left-padding.right]);
+            var yScale = d3.scaleLinear()
+                        .domain([0,gdpmax*1.1])
+                        .range([width-padding.top-padding.bottom,0]);
+
+            var linePath = d3.line()
+                            .x(d=>xScale(d[0]))
+                            .y(d=>yScale(d[1]));
+            var paths = svg.selectAll("path")   
+                .data(dataset)
+                .enter()
+                .append("path")
+                .attr("transform","translate("+padding.left+","+padding.top+")")
+                .attr("d",d=>linePath(d.gdp))
+                .attr("fill","none")
+                .attr("stoke-width","3px")
+                .attr("stroke",(d,i)=>d3.schemeCategory10[i]);
+
+            var xAxis = d3.axisBottom()
+                        .scale(xScale)
+                        .ticks(5)
+                        .tickFormat(d3.format("d"));
+
+            var yAxis = d3.axisLeft()
+                        .scale(yScale);
+
+            svg.append("g").attr("class","axis")
+                .attr("transform","translate("+padding.left+","+(height-padding.bottom)+")")
+                .call(xAxis);
+
+            svg.append("g").attr("class","axis")
+                .attr("transform","translate("+padding.left+","+padding.top+")")
+                .call(yAxis);
+
+            //label
+            svg.selectAll(".label")
+                .data(dataset)
+                .enter()
+                .append("g")
+                .attr("class","label")
+                    .append("rect")
+                    .attr("width",20)
+                    .attr("height",20)
+                    .attr("x",(d,i)=>padding.left+100*i)
+                    .attr("y",(height-padding.bottom+25))
+                    .attr("fill",(d,i)=>d3.schemeCategory10[i])
+                    .attr("stroke-width","0px");
+            svg.selectAll(".label")
+                    .append("text")
+                    .text(d=>d.country)
+                    .attr("fill","black")
+                    .attr("text-anchor","start")
+                    .attr("x",(d,i)=>padding.left+100*i)
+                    .attr("y",(height-padding.bottom+25))
+                    .attr("dx","1.5em")
+                    .attr("dy","1.0em")
+        </script>
+        <script>
+            //pie chart
+            var width = 600;
+            var height =600;
+            var svg = d3.select("body").append("svg")
+                        .attr("width",width)
+                        .attr("height",height);
+
+            var dataset = [["小米",60.8],["三星",58.4],["联想",47.3],["苹果",46.6],["华为",41.3],["酷派",40.1],["其他",111.5]];
+            var pie = d3.pie().value(d=>d[1]);
+            var piedata = pie(dataset);
+            
+            var arc = d3.arc()
+                        .outerRadius(width/3)
+                        .innerRadius(0);
+            var color = d3.schemeCategory10;
+
+            var arcs = svg.selectAll("g")
+                        .data(piedata)
+                        .enter()
+                        .append("g")
+                        .attr("transform","translate("+width/2+","+height/2+")");
+            arcs.append("path")
+                    .attr("fill",(d,i)=>color[i])
+                    .attr("d",d=>arc(d));
+            arcs.append("text")
+                    .attr("transform",d=>{
+                        var x = arc.centroid(d)[0]*1.4;
+                        var y = arc.centroid(d)[1]*1.4;
+                        return "translate("+x+","+y+")";
+                    })
+                    .attr("text-anchor","middle")
+                    .text(d=>{
+                        var percent = Number(d.value)/d3.sum(dataset,d=>d[1])*100;
+                        return percent.toFixed(1)+"%";
+                    })
+            arcs.append("line")
+                .attr("stroke","black")
+                .attr("x1",d=>arc.centroid(d)[0]*2)
+                .attr("y1",d=>arc.centroid(d)[1]*2)
+                .attr("x2",d=>arc.centroid(d)[0]*2.2)
+                .attr("y2",d=>arc.centroid(d)[1]*2.2);
+            arcs.append("text")
+                .attr("transform",d=>"translate(" + arc.centroid(d)[0]*2.4 + "," + arc.centroid(d)[1]*2.4+")")
+                .attr("text-anchor","middle")
+                .text(d=>d.data[0]);
+        </script>
+        <script>
+            //stack chart
+            var width = 600;
+            var height =400;
+            var svg = d3.select("body").append("svg")
+                        .attr("width",width)
+                        .attr("height",height);
+            
+            var dataset = [
+                {year:2005,PC:3000,SmartPhone:2000,Software:1100},
+                {year:2006,PC:1300,SmartPhone:4000,Software:1700},
+                {year:2007,PC:3700,SmartPhone:1810,Software:1680},
+                {year:2008,PC:4900,SmartPhone:6540,Software:4000},
+                {year:2009,PC:700,SmartPhone:2820,Software:4900}
+            ];
+
+            var stack = d3.stack()
+                        .keys(["PC","SmartPhone","Software"]);
+            var stackData = stack(dataset);
+            var padding = {left:50,right:100,top:30,bottom:30};
+
+            var xScale = d3.scaleBand()
+                            .domain(dataset.map(d=>d.year))
+                            .range([0,width - padding.left-padding.right])
+                            .padding(0.3);
+            var maxProfit = d3.max(stackData[stackData.length-1],d=>d[1]);
+
+            var yScale = d3.scaleLinear()
+                            .domain([0,maxProfit])
+                            .range([height-padding.top-padding.bottom,0]);
+            var colors = d3.schemeCategory10;
+
+            var groups = svg.selectAll("g")
+                        .data(stackData)
+                        .enter()
+                        .append("g")
+                        .attr("class","bar")
+                        .style("fill",(d,i)=>colors[i])
+                        .each(function(d){
+                            d3.select(this).selectAll("rect")
+                                .data(d)
+                                .enter()
+                                .append("rect")
+                                .attr("x",(d,i)=>xScale(dataset[i].year))
+                                .attr("y",d=>yScale(d[1]))
+                                .attr("width",xScale.bandwidth())
+                                .attr("height",d=>yScale(d[0])-yScale(d[1]))
+                                .attr("transform",`translate(${padding.left},${padding.top})`)
+                        })
+            
+            svg.append("g")
+                .attr("class","axis")
+                .call(d3.axisBottom(xScale))
+                .attr("transform",`translate(${padding.left},${height-padding.bottom})`);
+            svg.append("g")
+                .attr("class","axis")
+                .call(d3.axisLeft(yScale))
+                .attr("transform",`translate(${padding.left},${padding.top})`);
+            
+            var labHeight = 50;
+            var labRadius = 10;
+            var labelCircle = groups.append("circle")
+                             .attr("cx",d=>width-padding.right*0.98)
+                             .attr("cy",(d,i)=>padding.top*2+labHeight*i)
+                             .attr("r",labRadius);
+            var labelText = groups.append("text")
+                              .attr("x",d=>width-padding.right*0.8)
+                              .attr("y",(d,i)=>padding.top*2+labHeight*i)
+                              .attr("dy",labRadius/2)
+                              .text(d=>d.key)
+        </script>-->
+        <script>
+            var padding = {top:30,right:30,bottom:30,left:30},
+                width = 960-padding.left-padding.right,
+                height = 500-padding.top-padding.bottom,
+                svg = d3.select("body").append("svg")
+                    .attr("width",960)
+                    .attr("height",500),
+                g = svg.append("g")
+                        .attr("transform",`translate(${padding.left},${padding.top})`);
+
+            var rand = d3.randomNormal(170,10),
+                dataset = [];
+            for(var i=0;i<100;i++){
+                dataset.push(rand());
+            }
+            var binNum = 20,
+                rangeMin = 130,
+                rangeMax = 210;
+            var histogram = d3.histogram()
+                              .domain([rangeMin,rangeMax])
+                              .thresholds(binNum);
+            var hisData = histogram(dataset);
+
+            var xScale = d3.scaleBand()
+                            .domain(hisData.map(d=>d.x0))
+                            .rangeRound([0,width])
+                            .padding(0.1);
+            var yScale = d3.scaleLinear()
+                            .domain(d3.extent(hisData,d=>d.length))
+                            .range([height,0]);
+            var linePath = d3.line()
+                            .x(d=>xScale(d.x0))
+                            .y(d=>yScale(d.length))
+                            .curve(d3.curveBasis);
+
+            g.selectAll("rect")
+                .data(hisData)
+                .enter()
+                .append("rect")
+                .attr("class","rect")
+                .attr("x",d=>xScale(d.x0))
+                .attr("y",d=>yScale(d.length))
+                .attr("height",d=>height - yScale(d.length))
+                .attr("width",xScale.bandwidth())
+                .attr("fill","steelblue");
+
+            g.append("path")
+                .datum(hisData)
+                .attr("d",linePath)
+                .style("fill","none")
+                .style("stroke","orange")
+                .style("stroke-width","3px");
+
+            g.append("g")
+                .attr("transform",`translate(0,${height})`)
+                .call(d3.axisBottom(xScale))
+
+        </script>
+    </body>
+</html>

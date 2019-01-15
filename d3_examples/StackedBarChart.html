@@ -1,0 +1,103 @@
+<html>
+    <head>
+        <meta chartset="utf-8">
+        <title>Stacked Bar Chart</title>
+        <style type="text/css">
+        </style>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+    </head>
+    <body>
+    	<svg width="960" height="500"></svg>
+    	<script>
+		var svg = d3.select("svg"),
+		    margin = {top: 20, right: 20, bottom: 30, left: 50},
+		    width = +svg.attr("width")-margin.left-margin.right,
+		    height = +svg.attr("height")-margin.top-margin.bottom,
+	    	g = svg.append("g").attr("transform",`translate(${margin.left},${margin.top})`);
+
+	    var xScale = d3.scaleBand()
+	    			.rangeRound([0,width])
+	    			.padding(0.05);
+	    var yScale = d3.scaleLinear()
+	    			.rangeRound([height,0]);
+	    var colors = d3.scaleOrdinal()
+	    			.range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+	   	
+	   	d3.csv("data/population.csv",function(d,_,columns){
+	   		d.total = 0;
+	   		for(var i=1;i<columns.length;i++){
+	   			d[columns[i]] = (+d[columns[i]]);
+	   			d.total += d[columns[i]];
+	   		}
+	   		return d;
+	   	},function(data){
+
+	   		data.sort((a,b)=>b.total-a.total);
+
+	   		var stackKeys = data.columns.slice(1)
+	   		var stackData = d3.stack().keys(stackKeys)(data);
+
+	   		xScale.domain(data.map(d=>d.State));
+	   		yScale.domain([0,d3.max(stackData[stackData.length-1],d=>d[1])]);
+	   		colors.domain(stackKeys);
+
+	   		var groups = g.selectAll("g")
+			   			.data(stackData)
+			   			.enter()
+			   			.append("g")
+			   			.attr("class","groups")
+			   			.attr("fill",d=>colors(d.key))
+			   			.each(function(d){
+			   				d3.select(this).selectAll("rect")
+			   					.data(d=>d)
+			   					.enter()
+			   					.append("rect")
+			   						.attr("x",d=>xScale(d.data.State))
+			   						.attr("y",d=>yScale(d[1]))
+			   						.attr("width",xScale.bandwidth())
+			   						.attr("height",d=>yScale(d[0])-yScale(d[1]));
+			   			})
+			var labels = g.append("g")
+							.attr("class","labels")
+							.selectAll("g")
+							.data(stackKeys.reverse())
+							.enter()
+							.append("g")
+								.attr("transform",(d,i)=>{return `translate(${width - margin.right},${i*20+margin.top})`})
+
+			labels.append("rect")
+					.attr("width",19)
+					.attr("height",19)
+					.attr("fill",d=>colors(d));
+
+			labels.append("text")
+					.text(d=>d)
+					.attr("x","0")
+					.attr("dx","-0.5em")
+					.attr("y","11")
+					.style("font","10px sans-serif")
+					.attr("text-anchor","end")
+
+			g.append("g")
+				.attr("class","axis")
+				.attr("transform", "translate(0," + height + ")")
+      			.call(d3.axisBottom(xScale))
+      			.select(".domain")
+      				.remove();
+
+      		g.append("g")
+		      .attr("class", "axis")
+		      .call(d3.axisLeft(yScale).ticks(null,"s"))
+		      	.append("text")
+		      		.text("Population")
+		      		.attr("fill","#000")
+		      		.attr("font-weight", "bold")
+		      		.attr("x",2)
+		      		.attr("y",-8)
+		      		.attr("dy","0.32em")
+		      		.attr("text-anchor","start");
+	   	})
+	   
+    	</script>
+  </body>
+</html>

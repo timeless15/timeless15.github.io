@@ -1,0 +1,74 @@
+<html>
+    <head>
+        <meta chartset="utf-8">
+        <title>Stacked Area Chart</title>
+        <style type="text/css">
+        </style>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+    </head>
+    <body>
+    	<svg width="960" height="500"></svg>
+    	<script>
+		var svg = d3.select("svg"),
+		    margin = {top: 20, right: 20, bottom: 30, left: 50},
+		    width = +svg.attr("width")-margin.left-margin.right,
+		    height = +svg.attr("height")-margin.top-margin.bottom,
+	    	g = svg.append("g").attr("transform",`translate(${margin.left},${margin.top})`);
+
+	    var parseTime = d3.timeParse("%Y %b %d");
+	    //scale
+	    var xScale = d3.scaleTime()
+	    				.rangeRound([0,width]);
+	    var yScale = d3.scaleLinear()
+	    				.rangeRound([height,0]);
+	    var colors = d3.schemeCategory10;
+
+	    //area
+	    var areaPath = d3.area()
+	    			.x(d=>xScale(d.data.date))
+	    			.y0(d=>yScale(d[0]))
+	    			.y1(d=>yScale(d[1]));
+
+	    d3.tsv("data/browsers.tsv",function(d,_,columns){
+	    	//format
+	    	d.date = parseTime(d.date);
+	    	for(var i=1;i<columns.length;i++){
+	    		d[columns[i]] = +d[columns[i]]/100;
+	    	}
+	    	return d;
+	    },function(data){
+	    	var stackData = d3.stack().keys(data.columns.slice(1))(data);
+	    	xScale.domain(d3.extent(data,d=>d.date));
+
+	    	var layer = g.selectAll(".layer")
+	    		.data(stackData)
+	    		.enter()
+	    		.append("g")
+	    		.attr("class","layer");
+	    	layer.append("path")
+	    			.attr("class","area")
+	    			.style("fill",d=>colors[d.index])
+	    			.attr("d",areaPath);
+
+	    	layer.filter(d=>d[d.length-1][1]-d[d.length-1][0]>0.01)
+	    		.append("text")
+	    			.attr("x",width-6)
+	    			.attr("y",d=>yScale((d[d.length-1][0]+d[d.length-1][1])/2))
+	    			.attr("dy","0.35em")
+	    			.attr("font","10px sans-serif")
+	    			.style("text-anchor","end")
+	    			.text(d=>d.key);
+
+	    	g.append("g")
+	    		.attr("class","axis")
+	    		.attr("transform", "translate(0," + height + ")")
+      			.call(d3.axisBottom(xScale));
+	    	g.append("g")
+		      .attr("class", "axis axis--y")
+		      .call(d3.axisLeft(yScale).ticks(10, "%"));
+
+	    })
+	   
+    	</script>
+  </body>
+</html>

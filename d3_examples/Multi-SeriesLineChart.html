@@ -1,0 +1,92 @@
+<html>
+    <head>
+        <meta chartset="utf-8">
+        <title>Multi Series Line Chart</title>
+        <style type="text/css">
+        </style>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+    </head>
+    <body>
+    	<svg width="960" height="500"></svg>
+    	<script>
+		var svg = d3.select("svg"),
+		    margin = {top: 20, right: 80, bottom: 30, left: 50},
+		    width = +svg.attr("width")-margin.left-margin.right,
+		    height = +svg.attr("height")-margin.top-margin.bottom,
+	    	g = svg.append("g").attr("transform",`translate(${margin.left},${margin.top})`);
+
+	    var parseTime = d3.timeParse("%Y%m%d");
+	    var xScale = d3.scaleTime()
+	    			.rangeRound([0,width]);
+	    var yScale = d3.scaleLinear()
+	    			.rangeRound([height,0]);
+
+	    var linePath = d3.line()
+	    				.x(d=>xScale(d.date))
+	    				.y(d=>yScale(d.tempurate))
+	    				.curve(d3.curveBasis);
+
+	    var colors = d3.schemeCategory10;
+	    d3.tsv("data/avgTemp.tsv",
+	    	function(d,_,columns){
+	    		d.date = parseTime(d.date);
+	    		for(var i=1;i<columns.length;i++){
+	    			d[columns[i]] =+ d[columns[i]];
+	    		}
+	    		return d;
+	    	},
+	    	function(error,data){
+		    	var cityData = data.columns.slice(1).map(function(id){
+		    		return {
+		    			id:id,
+		    			values:data.map(function(d){
+		    				return {date:d.date,tempurate:d[id]}
+		    			})
+		    		};
+		    	});
+
+		 		xScale.domain(d3.extent(data,d=>d.date));
+		 		yScale.domain([d3.min(cityData,d=>d3.min(d.values,c=>c.tempurate)),
+		 					   d3.max(cityData,d=>d3.max(d.values,c=>c.tempurate))]);
+		 		var city = g.selectAll(".city")
+		 					.data(cityData)
+		 					.enter()
+		 					.append("g")
+		 					.attr("class","city");
+		 		city.append("path")
+		 			.attr("d",d=>linePath(d.values))
+		 			.attr("fill","none")
+		 			.attr("stroke",(d,i)=>colors[i])
+		 			.attr("stroke-width",1.5);
+
+		 		city.append("text")
+		 			.datum(d=>{
+		 				return {
+		 					id:d.id,
+		 					value:d.values[d.values.length-1]
+		 				};
+		 			})
+		 			.text(d=>d.id)
+		 			.attr("transform",d=>`translate(${xScale(d.value.date)},${yScale(d.value.tempurate)})`)
+		 			.attr("x",3)
+		 			.attr("dy","0.45em")
+		 			.style("font-size","12px")
+
+		 		g.append("g")
+		 			.attr("transform",`translate(0,${height})`)
+		 			.call(d3.axisBottom(xScale))
+		 		 .select(".domain")
+		 		 	.remove();
+		 		g.append("g")
+		 			.call(d3.axisLeft(yScale))
+		 		 .append("text")
+		 		 	.attr("transform","rotate(-90)")
+		 		 	.attr("y",6)
+		 		 	.attr("dy","0.71em")
+		 		 	.attr("fill","#000")
+		 		 	.text("Tempurate");
+		    })
+			//数据处理
+    	</script>
+  </body>
+</html>

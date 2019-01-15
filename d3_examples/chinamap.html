@@ -1,0 +1,153 @@
+<html>
+    <head>
+        <meta chartset="utf-8">
+        <title>Map</title>
+        <style type="text/css">
+        </style>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script src="https://unpkg.com/topojson@3"></script>
+    </head>
+    <body>
+    	<svg width="1200" height="900"></svg>
+    	<!--<script>
+	    	var svg = d3.select("svg"),
+			    margin = {top: 10, right: 10, bottom: 10, left: 10},
+			    width = +svg.attr("width")-margin.left-margin.right,
+			    height = +svg.attr("height")-margin.top-margin.bottom,
+			    g = svg.append("g").attr("transform",`translate(${margin.left},${margin.top})`);
+
+			var projection = d3.geoMercator()
+								.center([110,25])
+								.scale(600)
+								.translate([width/2,height/2])
+								.precision([0.1])
+
+			var path = d3.geoPath()
+							.projection(projection);
+			var color = d3.scaleOrdinal(d3.schemeCategory20);
+			/*d3.json("data/china.geojson",function(error, root){
+				console.log(root);
+				g.selectAll("path")
+				.data(root.features)
+				.enter()
+				.append("path")
+					.attr("class","province")
+					.attr("fill",(d,i)=>color(i))
+					.style("opacity",0.9)
+					.attr("d",path);
+			})*/
+			d3.json("data/china.topojson",function(error,toporoot){
+				var georoot = topojson.feature(toporoot,toporoot.objects.china);
+				var southeast = d3.set([
+					"广东省","海南省","福建省","浙江省","江西省","江苏省","台湾省","上海市","香港特别行政区","澳门特别行政区"
+				]);
+				var mergedPolygon = topojson.merge(toporoot,
+					toporoot.objects.china.geometries.filter(d=>southeast.has(d.properties.name))
+				);
+				var boundary = topojson.mesh(toporoot,toporoot.objects.china,function(a,b){
+					return (a.properties.name==="新疆维吾尔自治区" && b.properties.name==="西藏自治区") || (a.properties.name==="西藏自治区" && b.properties.name==="新疆维吾尔自治区");
+				});
+				var neighbors = topojson.neighbors(toporoot.objects.china.geometries);
+				
+				var paths = g.selectAll("path")
+							.data(georoot.features)
+							.enter()
+							.append("path")
+							.style("fill","#ccc")
+							.attr("d",path)
+							.each(function(d,i){
+								var allpaths = d3.select(this.parentNode).selectAll("path");
+								d.neighbors = neighbors[i].map(j=>{
+									return allpaths.filter((data,index)=>index===j);
+								})
+							})
+							//我靠 大坑！箭头函数的this是在定义时确定的，而非调用时，所以这里如果用箭头函数this为window，自然会报错
+							.on("mouseover",function(d,i){
+								d3.select(this).style("fill","orange");
+								d.neighbors.forEach(v=>v.style("fill","steelblue"));
+							})
+							.on("mouseout",function(d,i){
+								d3.select(this).style("fill","#ccc");
+								d.neighbors.forEach(v=>v.style("fill","#ccc"));
+							})
+							.on("click",function(d){
+								var area = path.area(d),
+									centroid = path.centroid(d),
+									bounds = path.bounds(d);
+								console.log("Province： "+d.properties.name);
+								console.log("Area: "+area);
+								console.log("center: "+centroid);
+								console.log("Boundary: "+bounds);
+								svg.append("circle")
+									.attr("class","centroid")
+									.attr("cx",centroid[0])
+									.attr("cy",centroid[1])
+									.attr("r",8);
+								svg.append("rect")
+									.attr("class","boundingbox")
+									.attr("x",bounds[0][0])
+									.attr("y",bounds[0][1])
+									.attr("width",bounds[1][0]-bounds[0][0])
+									.attr("height",bounds[1][1]-bounds[0][1])
+									.style("fill","none")
+									.style("stroke","#000")
+							});
+				/*svg.append("path")
+					.datum(mergedPolygon)
+					.attr("d",path)
+					.style("fill","darkred");*/
+
+				var eps = 1e-4;
+				var graticule = d3.geoGraticule()
+					.extent([[71,16],[137,54]])
+					.step([5,5]);
+				var grid = graticule();
+				svg.append("path")
+					.datum(grid)
+					.attr("class","graticule")
+					.attr("d",path)
+					.attr("stroke","#000")
+			})
+
+    	</script>-->
+    	<script>
+    		var svg = d3.select("svg"),
+			    margin = {top: 10, right: 10, bottom: 10, left: 10},
+			    width = +svg.attr("width")-margin.left-margin.right,
+			    height = +svg.attr("height")-margin.top-margin.bottom,
+			    g = svg.append("g").attr("transform",`translate(${margin.left},${margin.top})`),
+			    color = d3.scaleOrdinal(d3.schemeCategory20c);
+			var projection = d3.geoOrthographic()
+								//.center([0,30])
+								.scale(300)
+								.rotate([-90,0,-90])
+								.clipAngle(180)
+								.translate([width/2,height/2]);
+			var path = d3.geoPath().projection(projection);
+			d3.json("data/world.geojson",function(root){
+				g.selectAll("path")
+					.data(root.features)
+					.enter()
+					.append("path")
+					.attr("d",path)
+					.attr("fill",(d,i)=>color(i))
+					.attr("stroke","#fff")
+			})
+			var angles = d3.range(0,180,5);
+			var geocircle = d3.geoCircle()
+							.center([77,-19]);
+			g.append("g")
+				.selectAll(".geocircle")
+				.data(angles)
+				.enter()
+				.append("path")
+				.attr("class","geocircle")
+				.attr("d",function(d){
+					var circle = geocircle.radius(d);
+					return path(circle());
+				})
+				.style("fill","none")
+				.style("stroke","#aaa")
+    	</script>
+  </body>
+</html>

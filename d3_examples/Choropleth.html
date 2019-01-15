@@ -1,0 +1,106 @@
+<html>
+    <head>
+        <meta chartset="utf-8">
+        <title>Choropleth</title>
+        <style type="text/css">
+        #tooltip{
+            position: absolute;
+            background-color: #fff;
+            color: #000;
+            padding: 10px;
+            border: 1px solid;
+            display: none;
+        }
+        </style>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+        <script src="https://d3js.org/topojson.v2.min.js"></script>
+    </head>
+    <body>
+        <svg width="960" height="600"></svg>
+        <div id="tooltip"></div>
+        <script>
+            var svg = d3.select("svg"),
+                margin = {top: 10, right: 10, bottom: 10, left: 10},
+                width = +svg.attr("width")-margin.left-margin.right,
+                height = +svg.attr("height")-margin.top-margin.bottom,
+                g = svg.append("g").attr("transform",`translate(${margin.left},${margin.top})`);
+                tooltip = d3.select("#tooltip");
+            var path = d3.geoPath();
+            var unemployment = d3.map();
+            var xScale = d3.scaleLinear()
+                            .domain([1,10])
+                            .rangeRound([600,860]);
+            var color = d3.scaleThreshold()
+                            .domain(d3.range(2,10))
+                            .range(d3.schemeBlues[9]);
+            var key = g.append("g")
+                .attr("class","key")
+                .attr("transform","translate(0,40)");
+            key.selectAll("rect")
+                .data(color.range().map(function(d){
+                    d = color.invertExtent(d);
+                    if(d[0]==null) {d[0]=xScale.domain()[0];}
+                    if(d[1]==null) {d[1]=xScale.domain()[1];}
+                    return d;
+                }))
+                .enter()
+                .append("rect")
+                    .attr("width",d=>xScale(d[1])-xScale(d[0]))
+                    .attr("height",8)
+                    .attr("x",d=>xScale(d[0]))
+                    .attr("fill",d=>color(d[0]));
+            key.append("g")
+                .attr("class","axis")
+                .call(d3.axisBottom(xScale)
+                        .tickSize(13)
+                        .tickFormat((x,i)=>i?x:x+"%")
+                        .tickValues(color.domain())
+                )
+                .select(".domain")
+                    .remove();
+            key.append("text")
+                .text("Unemployment rate")
+                .style("fill","#000")
+                .style("font-weight","bold")
+                .style("font","10px sans-serif")
+                .attr("x",xScale.range()[0])
+                .attr("y",-6)
+                .attr("text-anchor","start")
+
+            d3.queue()
+                .defer(d3.json,"https://d3js.org/us-10m.v1.json")
+                .defer(d3.tsv,"data/unemployment.tsv",d=>unemployment.set(d.id,+d.rate))
+                .await(ready);
+
+            function ready(error,us){
+                g.append("g").attr("class","counties")
+                    .selectAll("path")
+                    .data(topojson.feature(us,us.objects.counties).features)
+                    .enter()
+                    .append("path")
+                    .attr("d",path)
+                    .style("fill",d=>color(d.rate=unemployment.get(d.id)))
+                    .on("mouseover",function(d){
+                        tooltip.style("display","block")
+                               .html(d.rate)
+                               .style("top",(d3.event.layerY+15) +"px")
+                               .style("left",(d3.event.layerX+15)+ "px");
+                    })
+                    .on("mouseout",function(d){
+                        tooltip.style("display","none");
+                    })
+                    
+                g.append("path").attr("class","states")
+                    .datum(topojson.mesh(us,us.objects.states,(a,b)=>a!==b))
+                    .attr("d",path)
+                    .style("fill","none")
+                    .style("stroke","#fff")
+                    .style("stroke-linejoin","round");
+            }    
+                
+            
+        </script>
+        
+  </body>
+</html>

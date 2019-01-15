@@ -1,0 +1,87 @@
+<html>
+    <head>
+        <meta chartset="utf-8">
+        <title>Dual Scale Bar Chart</title>
+        <style type="text/css">
+        </style>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+    </head>
+    <body>
+    	<svg width="600" height="400"></svg>
+    	<script>
+		var svg = d3.select("svg"),
+		    margin = {top: 80, right: 80, bottom: 80, left: 80},
+		    width = +svg.attr("width")-margin.left-margin.right,
+		    height = +svg.attr("height")-margin.top-margin.bottom,
+	    	g = svg.append("g").attr("transform",`translate(${margin.left},${margin.top})`);
+
+	    var yScale1 = d3.scaleLinear().range([height,0]),
+	    	yScale2 = d3.scaleLinear().range([height,0]),
+	    	xScale = d3.scaleBand()
+	    			   .rangeRound([0,width])
+	    			   .padding(0.1);
+
+	    d3.tsv("data/dualScaleBarChart.tsv",d=>{
+	    	d.money =+ d.money;
+	    	d.number =+ d.number;
+	    	return d;
+	    },function(data){
+	    	yScale1.domain([0,d3.max(data,d=>d.money)]);
+	    	yScale2.domain([20,80]);
+	    	xScale.domain(data.map(d=>d.year));
+	    	var group = g.selectAll(".group")
+			    		.data(data)
+			    		.enter()
+			    		.append("g")
+			    			.attr("class","group")
+			    			;
+	    	group.append("rect")
+	    			.attr("class","money")
+					.attr("x",d=>xScale(d.year))
+					.attr("y",d=>yScale1(d.money))
+					.attr("height",d=>(height-yScale1(d.money)))
+					.attr("width",xScale.bandwidth()/2)
+					.attr("fill","steelblue");
+			group.append("rect")
+	    			.attr("class","number")
+					.attr("x",d=>(xScale(d.year)+xScale.bandwidth()/2))
+					.attr("y",d=>yScale2(d.number))
+					.attr("height",d=>(height-yScale2(d.number)))
+					.attr("width",xScale.bandwidth()/2)
+					.attr("fill","orange");
+
+			g.append("g")
+				.attr("class","axis")
+				.attr("transform",`translate(0,${height})`)
+				.call(d3.axisBottom(xScale))
+				.select(".domain")
+					.remove();
+			var y1 = g.append("g")
+				.attr("class","axis")
+				.call(d3.axisLeft(yScale1).ticks(5));
+			y1.selectAll("text")
+				.style("fill","steelblue");
+			y1.append("text")
+				.text("Dollars")
+				.style("fill","steelblue")
+				.style("font","12px sans-serif")
+				.attr("text-anchor","middle")
+				.attr("x",-9)
+				.attr("y",-10);
+			var y2 = g.append("g")
+				.attr("class","axis")
+				.attr("transform",`translate(${width},0)`)
+				.call(d3.axisRight(yScale2).ticks(7));
+			y2.selectAll("text")
+				.style("fill","orange");
+			y2.append("text")
+				.text("#")
+				.style("fill","orange")
+				.style("font","12px sans-serif")
+				.attr("text-anchor","middle")
+				.attr("x",9)
+				.attr("y",-10);
+	    })
+    	</script>
+  </body>
+</html>

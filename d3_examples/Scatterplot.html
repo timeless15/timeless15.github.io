@@ -1,0 +1,98 @@
+<html>
+    <head>
+        <meta chartset="utf-8">
+        <title>Scatter Plot</title>
+        <style type="text/css">
+        </style>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+    </head>
+    <body>
+    	<svg width="960" height="500"></svg>
+    	<script>
+		    var svg = d3.select("svg"),
+    		    margin = {top: 20, right: 20, bottom: 30, left: 40},
+    		    width = +svg.attr("width")-margin.left-margin.right,
+    		    height = +svg.attr("height")-margin.top-margin.bottom,
+    	    	g = svg.append("g").attr("transform",`translate(${margin.left},${margin.top})`);
+
+        var xScale = d3.scaleLinear().rangeRound([0,width]),
+            yScale = d3.scaleLinear().rangeRound([height,0]),
+            colors = d3.scaleOrdinal().range(d3.schemeCategory10);
+
+        d3.tsv("data/flowers.tsv",function(d){
+            d.sepalLength = +d.sepalLength;
+            d.sepalWidth = +d.sepalWidth;
+            return d;
+        },function(error,data){
+            //scaleOrdinal的domain不一定要制定，可以通过传递新的值加进去
+            /*var keys = [data[0].species];
+            data.forEach(d=>{
+                for(var i=0;i<keys.length;i++){
+                    if(keys.indexOf(d.species)===-1){
+                        keys.push(d.species)
+                    }
+                }
+            })*/
+            xScale.domain(d3.extent(data,d=>d.sepalWidth)).nice();
+            yScale.domain(d3.extent(data,d=>d.sepalLength)).nice();
+            //colors.domain(keys);
+
+            g.append("g")
+             .attr("class","circle")
+                 .selectAll("circle")
+                 .data(data)
+                 .enter()
+                 .append("circle")
+                 .attr("cx",d=>xScale(d.sepalWidth))
+                 .attr("cy",d=>yScale(d.sepalLength))
+                 .style("fill",d=>colors(d.species))
+                 .attr("r",3.5)
+                 .attr("stroke-width",1)
+                 .attr("stroke","#000");
+            g.append("g")
+                .attr("class","axis")
+                .attr("transform",`translate(0,${height})`)
+                .call(d3.axisBottom(xScale))
+                .append("text")
+                    .text("Sepal Width (cm)")
+                    .attr("fill","#000")
+                    .attr("x",width)
+                    .attr("y",0)
+                    .attr("dx","-5em")
+                    .attr("dy","-1em")
+            g.append("g")
+                .attr("class","axis")
+                .call(d3.axisLeft(yScale))
+                .append("text")
+                    .text("Sepal Length (cm)")
+                    .attr("fill","#000")
+                    .attr("transform","rotate(-90)")
+                    .attr("x",0)
+                    .attr("y",0)
+                    .attr("dx","-1em")
+                    .attr("dy","2em");
+            var legends = g.append("g")
+                    .attr("class","legend")
+                    .attr("transform",`translate(${width},0)`)
+                        .selectAll("g")
+                        .data(colors.domain())
+                        .enter()
+                        .append("g");
+            legends.append("rect")
+                    .attr("width",18)
+                    .attr("height",18)
+                    .attr("y",(d,i)=>i*30)
+                    .style("fill",d=>colors(d));
+            legends.append("text")
+                    .text(d=>d)
+                    .style("font","10px sans-serif")
+                    .attr("text-anchor","end")
+                    .attr("x",-8)
+                    .attr("y",(d,i)=>i*30)
+                    .attr("dy","1.1em")
+
+        })
+
+    	</script>
+  </body>
+</html>
