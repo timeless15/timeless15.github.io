@@ -2,7 +2,7 @@
   "name": "eleapp",
   "version": "1.0.0",
   "description": "y",
-  "author": "shiqihan <shiqihan@hengtiansoft.com>",
+  "author": "shiqihan <hsq5218@163.com>",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
