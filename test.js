@@ -8,14 +8,12 @@ var itemSize = 18,
     dayFormat = d3.time.format('%j'),
     timeFormat = d3.time.format('%Y-%m-%dT%X'),
     monthDayFormat = d3.time.format('%m.%d');
-
   //data vars for rendering
   var dateExtent = null,
     data = null,
     dayOffset = 0,
     colorCalibration = ['#f46d43','#fdae61', '#fee08b', '#ffffbf', '#d9ef8b', '#a6d96a', '#66bd63'],
     dailyValueExtent = {};
-
   //axises and scales
   var axisWidth = 0 ,
     axisHeight = itemSize*24,
@@ -32,7 +30,6 @@ var itemSize = 18,
       .ticks(5)
       .tickFormat(d3.format('02d'))
       .scale(yAxisScale);
-
   initCalibration();
 
   var svg = d3.select('[role="heatmap"]');
@@ -61,7 +58,6 @@ var itemSize = 18,
       return d.date;
     });
     axisWidth = itemSize*(dayFormat(dateExtent[1])-dayFormat(dateExtent[0])+1);
-
     //render axises
     xAxis.scale(xAxisScale.range([0,axisWidth]).domain([dateExtent[0],dateExtent[1]]));  
     svg.append('g')
@@ -78,7 +74,6 @@ var itemSize = 18,
     .append('text')
       .text('time')
       .attr('transform','translate(-10,'+axisHeight+') rotate(-90)');
-
     //render heatmap rects
     dayOffset = dayFormat(dateExtent[0]);
     rect = heatmap.selectAll('rect')
@@ -93,7 +88,6 @@ var itemSize = 18,
         return hourFormat(d.date)*itemSize;
       })
       .attr('fill','#ffffff');
-
     rect.filter(function(d){ return d.value['PM2.5']>0;})
       .append('title')
       .text(function(d){
@@ -102,7 +96,6 @@ var itemSize = 18,
 
     renderColor();
   });
-
   function initCalibration(){
     d3.select('[role="calibration"] [role="example"]').select('svg')
       .selectAll('rect').data(colorCalibration).enter()
@@ -115,7 +108,6 @@ var itemSize = 18,
       .attr('fill',function(d){
         return d;
       });
-
     //bind click event
     d3.selectAll('[role="calibration"] [name="displayType"]').on('click',function(){
       renderColor();
@@ -124,7 +116,6 @@ var itemSize = 18,
 
   function renderColor(){
     var renderByCount = document.getElementsByName('displayType')[0].checked;
-
     rect
       .filter(function(d){
         return (d.value['PM2.5']>=0);
@@ -139,8 +130,6 @@ var itemSize = 18,
         var colorIndex = d3.scale.quantize()
           .range([0,1,2,3,4,5])
           .domain((renderByCount?[0,500]:dailyValueExtent[d.day]));
-
         return d3.interpolate(a,colorCalibration[colorIndex(d.value['PM2.5'])]);
       });
   }
-
