@@ -1,8 +1,6 @@
 # 3ds Max Wavefront OBJ Exporter v0.94b - (c)2007 guruware
 # File Created: 20.07.2019 12:23:36
 
-mtllib Camera CCTV N200719.mtl
-
 #
 # object shell
 #
@@ -2378,7 +2376,7 @@ vt 0.5788 1.0823 0.1970
 # 1500 texture coords
 
 g shell
-usemtl white_st
+# usemtl white_st
 s 1
 f 1/1 2/2 3/3 
 f 1/1 3/3 4/4 
